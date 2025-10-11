@@ -44,8 +44,12 @@ const TabsTrigger = React.forwardRef(({ className, value, onClick, children, ...
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-        activeTab === value && "bg-background text-foreground shadow-sm",
+        // Base button
+        "relative inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-sm font-medium text-muted-foreground transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+        // Underline indicator (inactive -> height 0)
+        "after:absolute after:left-2 after:right-2 after:-bottom-1 after:h-0 after:rounded-full after:bg-emerald-500/80 after:transition-all",
+        // Active state
+        activeTab === value && "text-emerald-700 dark:text-emerald-300 after:h-0.5",
         className
       )}
       onClick={handleClick}

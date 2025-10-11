@@ -11,7 +11,7 @@ export const Section = ({ id, title, icon: Icon, children }) => (
 );
 
 export const Pill = ({ children }) => (
-  <span className="inline-flex items-center rounded-full px-3 py-1 text-[12px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+  <span className="inline-flex items-center rounded-full px-3 py-1 text-[12px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
     {children}
   </span>
 );

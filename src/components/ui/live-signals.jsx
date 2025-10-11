@@ -65,16 +65,16 @@ export function LiveSignals() {
   const path = generateWavePath(width, height, cycles, amp, phase);
 
   return (
-    <Card className="bg-neutral-900/60 border-emerald-800/40">
+    <Card className="border dark:border-emerald-800/40 bg-card dark:bg-neutral-900/40">
       <CardHeader className="flex flex-col gap-2 pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm sm:text-base">Live Signals</CardTitle>
-          <div className="hidden sm:flex items-center gap-2 text-xs text-neutral-400">
-            <span className="rounded-md border border-emerald-800/40 px-2 py-1 text-emerald-300/90">
+          <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="rounded-md border border-emerald-300/40 dark:border-emerald-800/40 px-2 py-1 text-emerald-600/90 dark:text-emerald-300/90 bg-emerald-500/5 dark:bg-transparent">
               {running ? "RUN" : "STOP"}
             </span>
-            <span className="rounded-md border border-emerald-800/40 px-2 py-1">{cycles.toFixed(1)} Hz</span>
-            <span className="rounded-md border border-emerald-800/40 px-2 py-1">Amp {Math.round(amp * 100)}%</span>
+            <span className="rounded-md border border-emerald-300/30 dark:border-emerald-800/40 px-2 py-1">{cycles.toFixed(1)} Hz</span>
+            <span className="rounded-md border border-emerald-300/30 dark:border-emerald-800/40 px-2 py-1">Amp {Math.round(amp * 100)}%</span>
           </div>
           {/* Mobile status */}
           <div className="sm:hidden text-xs text-emerald-300/90">
@@ -85,7 +85,7 @@ export function LiveSignals() {
           <Button
             size="sm"
             onClick={() => setRunning((v) => !v)}
-            className={`h-7 px-3 ${running ? "bg-emerald-600 hover:bg-emerald-500" : "bg-neutral-800 hover:bg-neutral-700"}`}
+            className={`h-7 px-3 ${running ? "bg-emerald-600 hover:bg-emerald-500" : "bg-background border hover:bg-accent"}`}
           >
             {running ? (
               <>
@@ -99,7 +99,7 @@ export function LiveSignals() {
               </>
             )}
           </Button>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs text-neutral-400">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs text-muted-foreground">
             <Sliders className="h-3.5 w-3.5 hidden sm:block" />
             <div className="flex flex-col sm:flex-row gap-2">
               <label className="flex items-center gap-2 text-xs">
@@ -131,7 +131,7 @@ export function LiveSignals() {
         </div>
       </CardHeader>
       <CardContent className="space-y-3 p-3 sm:p-6">
-        <div className="rounded-2xl border border-emerald-800/40 bg-neutral-950/40 p-2 sm:p-3 relative overflow-hidden">
+        <div className="rounded-2xl border dark:border-emerald-800/40 bg-card dark:bg-neutral-950/40 p-2 sm:p-3 relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,.08),transparent_60%)]" />
           <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-[120px] sm:h-[160px]">
             <Grid width={width} height={height} />

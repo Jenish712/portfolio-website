@@ -30,25 +30,25 @@ export function ProjectCard({ project }) {
       onHoverEnd={() => setIsHovered(false)}
     >
       <Card
-        className="group hover:shadow-[0_0_0_1px_rgba(16,185,129,.4),0_10px_30px_rgba(16,185,129,.1)] transition-all duration-300 bg-neutral-900/40 border-emerald-800/40 cursor-pointer h-full flex flex-col relative overflow-hidden backdrop-blur-sm"
+        className="group hover:shadow-[0_0_0_1px_rgba(16,185,129,.35),0_10px_30px_rgba(16,185,129,.08)] transition-all duration-300 bg-card dark:bg-neutral-900/40 border dark:border-emerald-800/40 cursor-pointer h-full flex flex-col relative overflow-hidden"
         onClick={() => goProject(project.slug)}
       >
-        {/* Animated background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-neutral-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Subtle gradient layer */}
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
         {/* Header with enhanced styling */}
         <CardHeader className="pb-3 sm:pb-4 relative z-10">
-          <CardTitle className="text-sm sm:text-base flex items-start gap-2 text-emerald-300 leading-tight">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors">
+          <CardTitle className="text-sm sm:text-base flex items-start gap-2 leading-tight">
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 border group-hover:bg-emerald-500/20 transition-colors">
               <Cpu className="h-3.5 w-3.5 flex-shrink-0" />
             </div>
-            <span className="line-clamp-2 group-hover:text-emerald-200 transition-colors">{project.title}</span>
+            <span className="line-clamp-2">{project.title}</span>
           </CardTitle>
         </CardHeader>
         
         <CardContent className="flex-1 flex flex-col relative z-10">
           {/* Enhanced description */}
-          <p className="text-sm text-neutral-300 line-clamp-3 mb-4 group-hover:text-neutral-200 transition-colors leading-relaxed">
+          <p className="text-sm text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
             {project.summary}
           </p>
           
@@ -65,7 +65,7 @@ export function ProjectCard({ project }) {
               </motion.div>
             ))}
             {project.tags.length > 4 && (
-              <span className="text-xs text-neutral-500 self-center">
+              <span className="text-xs text-muted-foreground self-center">
                 +{project.tags.length - 4} more
               </span>
             )}
@@ -82,7 +82,7 @@ export function ProjectCard({ project }) {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-emerald-700/50 text-emerald-300 hover:bg-emerald-500/10 hover:border-emerald-500/50 text-xs group/btn transition-all duration-200"
+                  className="border text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/10 text-xs group/btn transition-all duration-200"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <a
@@ -109,15 +109,15 @@ export function ProjectCard({ project }) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="rounded-xl border border-emerald-800/40 p-2.5 group-hover:border-emerald-700/50 group-hover:bg-emerald-500/5 transition-all duration-200"
+                  className="rounded-xl border dark:border-emerald-800/40 p-2.5 transition-all duration-200"
                 >
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Zap className="h-2.5 w-2.5 text-emerald-400" />
-                    <div className="font-semibold text-emerald-300 truncate text-xs sm:text-sm">
+                    <Zap className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
+                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 truncate text-xs sm:text-sm">
                       {m.value}
                     </div>
                   </div>
-                  <div className="text-neutral-400 text-[10px] sm:text-xs truncate pl-4">
+                  <div className="text-muted-foreground text-[10px] sm:text-xs truncate pl-4">
                     {m.label}
                   </div>
                 </motion.div>
@@ -127,7 +127,7 @@ export function ProjectCard({ project }) {
           
           {/* Hover indicator */}
           <motion.div
-            className="absolute bottom-2 right-2 text-emerald-400 opacity-0 group-hover:opacity-100"
+            className="absolute bottom-2 right-2 text-emerald-600 dark:text-emerald-400 opacity-0 group-hover:opacity-100"
             initial={{ scale: 0.8, rotate: -45 }}
             animate={{ 
               scale: isHovered ? 1 : 0.8, 
@@ -143,3 +143,4 @@ export function ProjectCard({ project }) {
     </motion.div>
   );
 }
+

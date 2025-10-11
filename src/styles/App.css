@@ -89,3 +89,60 @@
     @apply focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2;
   }
 }
+@layer utilities {
+  /* Animated gradient utility */
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 8s ease infinite;
+  }
+  @keyframes gradient-x {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Subtle emerald glow for CTAs/cards */
+  .glow-emerald {
+    box-shadow: 0 0 0 1px rgba(16,185,129,.35), 0 12px 30px rgba(16,185,129,.08);
+  }
+}
+
+@layer utilities {
+  /* Animated circuit traces */
+  .circuit-traces {
+    background-image: repeating-linear-gradient(120deg, transparent 0px, transparent 98px, rgba(16,185,129,.07) 98px, rgba(16,185,129,.07) 102px);
+    background-size: 300px 300px;
+    animation: circuit-traces 28s linear infinite;
+  }
+  @keyframes circuit-traces {
+    from { background-position: 0 0; }
+    to   { background-position: 600px 0; }
+  }
+
+  /* Sweeping highlight */
+  .circuit-sweep {
+    background: linear-gradient(90deg, transparent 0%, rgba(16,185,129,.06) 40%, rgba(16,185,129,.10) 50%, rgba(16,185,129,.06) 60%, transparent 100%);
+    mix-blend-mode: screen;
+    opacity: .25;
+    animation: circuit-sweep 12s ease-in-out infinite;
+  }
+  @keyframes circuit-sweep {
+    0% { transform: translateX(-40%); }
+    50% { transform: translateX(40%); }
+    100% { transform: translateX(-40%); }
+  }
+
+  /* Pulsing 'LED' nodes */
+  .node-pulse {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 9999px;
+    background: rgba(16,185,129,.9);
+    box-shadow: 0 0 10px rgba(16,185,129,.6);
+    animation: node-blink 3.2s ease-in-out infinite;
+  }
+  @keyframes node-blink {
+    0%, 100% { opacity: .12; transform: scale(.9); }
+    50% { opacity: .9; transform: scale(1.1); }
+  }
+}

@@ -75,12 +75,12 @@ export function Projects() {
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search input */}
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search projects by title, tech, or keywords..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-10 bg-neutral-800/50 border-neutral-600/50 text-neutral-100 placeholder:text-neutral-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+                className="pl-10 pr-10"
               />
               {searchQuery && (
                 <Button
@@ -99,7 +99,7 @@ export function Projects() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 bg-neutral-800/50 border border-neutral-600/50 rounded-md text-neutral-100 text-sm focus:border-emerald-500 focus:ring-emerald-500/20"
+                className="px-3 py-2 bg-background border rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="recent">Most Recent</option>
                 <option value="title">Title A-Z</option>
@@ -111,7 +111,7 @@ export function Projects() {
                   variant="outline"
                   size="sm"
                   onClick={clearFilters}
-                  className="border-neutral-600/50 text-neutral-300 hover:bg-neutral-700/50"
+                  className="border text-muted-foreground hover:bg-accent"
                 >
                   <Filter className="h-4 w-4 mr-1" />
                   Clear
@@ -129,7 +129,7 @@ export function Projects() {
                 exit={{ opacity: 0, height: 0 }}
                 className="flex flex-wrap gap-2 text-sm"
               >
-                <span className="text-neutral-400">Active filters:</span>
+                <span className="text-muted-foreground">Active filters:</span>
                 {activeTab !== "all" && (
                   <Pill variant="secondary" className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30">
                     Category: {activeTab}
@@ -147,7 +147,7 @@ export function Projects() {
 
         {/* Enhanced tabs with project counts */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-neutral-800/50 border border-neutral-700/50">
+          <TabsList className="w-full overflow-x-auto whitespace-nowrap flex gap-2 bg-card/60 dark:bg-neutral-900/40 border dark:border-emerald-800/40 p-1 rounded-md md:grid md:grid-cols-2 lg:grid-cols-4 md:whitespace-normal md:overflow-visible">
             {categories.map((category) => {
               const count = category === "all" 
                 ? PROJECTS.length 
@@ -157,10 +157,10 @@ export function Projects() {
                 <TabsTrigger 
                   key={category} 
                   value={category}
-                  className="data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-300 text-neutral-400 hover:text-neutral-200 transition-all duration-200"
+                  className="min-w-[42%] sm:min-w-0 px-3 py-2 hover:text-foreground"
                 >
                   <span className="capitalize">{category}</span>
-                  <span className="ml-2 px-1.5 py-0.5 text-xs bg-neutral-700/50 rounded-full">
+                  <span className="ml-2 px-1.5 py-0.5 text-xs bg-foreground/10 text-foreground/70 rounded-full">
                     {count}
                   </span>
                 </TabsTrigger>
@@ -169,8 +169,8 @@ export function Projects() {
           </TabsList>
 
           {/* Results info */}
-          <div className="flex items-center justify-between mt-6 mb-4">
-            <div className="text-sm text-neutral-400">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-6 mb-4">
+            <div className="text-sm text-muted-foreground order-2 sm:order-1">
               {filteredAndSortedProjects.length === 0 ? (
                 "No projects found"
               ) : (
@@ -178,7 +178,7 @@ export function Projects() {
               )}
             </div>
             {sortBy !== "recent" && (
-              <div className="text-sm text-neutral-400 flex items-center gap-1">
+              <div className="text-sm text-muted-foreground flex items-center gap-1 order-1 sm:order-2">
                 <SortDesc className="h-4 w-4" />
                 Sorted by {sortBy}
               </div>
@@ -239,3 +239,6 @@ export function Projects() {
     </Section>
   );
 }
+
+
+

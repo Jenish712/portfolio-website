@@ -4,7 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Website</title>
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <script>
+      // Ensure dark theme is applied before styles render to avoid flash
+      (function() {
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
 </head>
 <body>
     <div id="root"></div>
