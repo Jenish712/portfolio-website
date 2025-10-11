@@ -3,6 +3,7 @@ import { Section, Pill } from "./ui/section";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { ScrollReveal } from "./ui/scroll-reveal";
 import { ProjectCard } from "./ProjectCard";
 import { PROJECTS } from "../data/projects";
 import { FolderOpen, Search, SortDesc, Filter, X } from "lucide-react";
@@ -67,7 +68,8 @@ export function Projects() {
   };
 
   return (
-    <Section id="projects" title="Featured Projects" icon={FolderOpen}>
+    <ScrollReveal delay={0.3} direction="left" duration={1.0}>
+      <Section id="projects" title="Featured Projects" icon={FolderOpen}>
       <div className="space-y-6">
         {/* Enhanced controls */}
         <div className="space-y-4">
@@ -216,16 +218,17 @@ export function Projects() {
                     exit={{ opacity: 0 }}
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                   >
-                    {filteredAndSortedProjects.map((project, index) => (
-                      <motion.div
-                        key={project.slug}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ 
-                          delay: index * 0.1,
-                          duration: 0.3 
-                        }}
-                      >
+                      {filteredAndSortedProjects.map((project, index) => (
+                        <motion.div
+                          key={project.slug}
+                          initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ 
+                            delay: index * 0.12,
+                            duration: 0.7,
+                            ease: [0.21, 0.47, 0.32, 0.98]
+                          }}
+                        >
                         <ProjectCard project={project} />
                       </motion.div>
                     ))}
@@ -237,6 +240,7 @@ export function Projects() {
         </Tabs>
       </div>
     </Section>
+    </ScrollReveal>
   );
 }
 

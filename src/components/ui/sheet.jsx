@@ -1,20 +1,16 @@
-import React, { useEffect, useState, useContext, createContext } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "../../utils/cn";
 
-const SheetContext = createContext({ open: false, setOpen: () => {} });
-
 const Sheet = ({ children, ...props }) => {
   const [open, setOpen] = useState(false);
   return (
-    <SheetContext.Provider value={{ open, setOpen }}>
-      <div {...props}>
-        {React.Children.map(children, (child) =>
-          React.isValidElement(child) ? React.cloneElement(child, { open, setOpen }) : child
-        )}
-      </div>
-    </SheetContext.Provider>
+    <div {...props}>
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child, { open, setOpen })
+      )}
+    </div>
   );
 };
 
@@ -51,53 +47,55 @@ const SheetContent = ({ className, open, setOpen, children, ...props }) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[100]">
-      <div className="fixed inset-0 bg-black/65" onClick={() => setOpen(false)} />
+      <div
+        className="fixed inset-0 bg-black/60"
+        onClick={() => setOpen(false)}
+      />
       <div
         role="dialog"
         aria-modal="true"
         className={cn(
-          "fixed inset-y-0 right-0 z-[101] flex h-full w-full max-w-md sm:max-w-lg bg-background text-foreground border-l border dark:border-emerald-900/40 shadow-[0_0_60px_-15px_rgba(16,185,129,0.35)]",
+          "fixed inset-y-0 right-0 z-[101] flex h-full w-full max-w-sm sm:max-w-md bg-neutral-950 text-neutral-100 border-l border-emerald-800/40 p-4 sm:p-6 shadow-2xl overflow-y-auto overflow-x-hidden",
           className
         )}
         {...props}
       >
-        {children}
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child) ? React.cloneElement(child, { setOpen }) : child
+        )}
       </div>
     </div>,
     document.body
   );
 };
 
-const SheetHeader = ({ className, children, ...props }) => {
-  const { setOpen } = useContext(SheetContext) || {};
-  return (
-    <div
-      className={cn(
-        "flex items-center justify-between gap-4 border-b border bg-background/80 px-6 py-5 backdrop-blur",
-        className
-      )}
-      {...props}
+const SheetHeader = ({ className, open, setOpen, children, ...props }) => (
+  <div
+    className={cn(
+      "sticky top-0 z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 mb-4 flex items-center justify-between border-b border-emerald-800/30 bg-neutral-950/95 backdrop-blur",
+      className
+    )}
+    {...props}
+  >
+    <div className="min-w-0">{children}</div>
+    <button
+      type="button"
+      onClick={() => setOpen?.(false)}
+      className="ml-4 inline-flex h-8 w-8 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-100 hover:bg-emerald-500/10 border border-transparent hover:border-emerald-700/40 transition-colors"
+      aria-label="Close"
     >
-      <div className="min-w-0">{children}</div>
-      <button
-        type="button"
-        onClick={() => setOpen?.(false)}
-        className="ml-2 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-muted-foreground transition-all hover:border-emerald-700/40 hover:bg-emerald-500/10 hover:text-foreground"
-        aria-label="Close menu"
-      >
-        <X className="h-4 w-4" aria-hidden="true" />
-        <span className="sr-only">Close menu</span>
-      </button>
-    </div>
-  );
-};
+      <X className="h-4 w-4" />
+    </button>
+  </div>
+);
 
 const SheetTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h2 ref={ref} className={cn("text-lg font-semibold", className)} {...props} />
+  <h2
+    ref={ref}
+    className={cn("text-lg font-semibold", className)}
+    {...props}
+  />
 ));
 SheetTitle.displayName = "SheetTitle";
 
-const useSheet = () => useContext(SheetContext);
-
-export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, useSheet };
-
+export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle };

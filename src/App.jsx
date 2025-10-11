@@ -6,10 +6,11 @@ import { Badge } from "./components/ui/badge";
 import { Input, Textarea } from "./components/ui/input";
 import { Separator } from "./components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, useSheet } from "./components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./components/ui/sheet";
 import { CircuitBackground } from "./components/ui/background";
 import { LiveSignals } from "./components/ui/live-signals";
 import { Section, Pill } from "./components/ui/section";
+import { ScrollReveal } from "./components/ui/scroll-reveal";
 import { Projects } from "./components/Projects";
 import { ProjectDetail } from "./components/ProjectDetail";
 import { useHashRoute } from "./utils/router";
@@ -28,6 +29,7 @@ import {
   FileText,
   Sun,
   Moon,
+  Menu,
   Link,
   GitBranch,
   User2,
@@ -166,15 +168,14 @@ function App() {
     [projectsCount, experienceCount, baseLocation]
   );
 
-  const MenuLinkCard = ({ id, label, description, icon: Icon, index }) => {
-    const { setOpen } = useSheet();
+  const MenuLinkCard = ({ id, label, description, icon: Icon, index, setOpen }) => {
     return (
       <motion.a
         href={`#${id}`}
+        onClick={() => setOpen?.(false)}
         whileHover={{ x: 6 }}
         whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        onClick={() => setOpen(false)}
         className="group relative block overflow-hidden rounded-xl border dark:border-emerald-900/40 bg-card dark:bg-neutral-900/40 px-4 py-4 transition-all duration-200 hover:border-emerald-500/60 hover:bg-emerald-500/10"
       >
         <span className="absolute inset-y-0 left-0 w-1 bg-emerald-500/0 transition-all duration-200 group-hover:bg-emerald-500/80" />
@@ -197,13 +198,12 @@ function App() {
     );
   };
 
-  const SocialTile = ({ s }) => {
-    const { setOpen } = useSheet();
+  const SocialTile = ({ s, setOpen }) => {
     return (
       <a
         href={s.href}
         aria-label={s.label}
-        onClick={() => setOpen(false)}
+        onClick={() => setOpen?.(false)}
         className="group flex flex-col items-center justify-center gap-2 rounded-xl border bg-card py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground transition-all hover:border-emerald-500/60 hover:bg-emerald-500/10 hover:text-emerald-200"
       >
         <s.icon className="h-5 w-5 text-emerald-600 dark:text-emerald-300 transition-colors duration-200 group-hover:text-emerald-200" />
@@ -212,152 +212,172 @@ function App() {
     );
   };
 
+  const SheetContentWrapper = ({ setOpen }) => {
+    return (
+      <div className="relative h-full overflow-hidden">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-24 right-[-40px] h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl opacity-60 dark:bg-emerald-500/20" />
+          <div className="absolute -bottom-28 left-[-60px] h-60 w-60 rounded-full bg-emerald-400/15 blur-3xl opacity-60 dark:bg-emerald-400/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(16,185,129,0.08),_rgba(0,0,0,0)_60%)] dark:bg-[radial-gradient(circle_at_top,#0f172a,rgba(15,23,42,0)_60%)] opacity-60" />
+        </div>
+        <div className="relative z-10 flex h-full flex-col">
+          <SheetHeader className="px-6 py-6 border dark:border-emerald-900/40">
+            <div className="space-y-1">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-emerald-600/70 dark:text-emerald-400/70">Portfolio</p>
+              <SheetTitle className="text-left text-2xl font-semibold">Navigate</SheetTitle>
+              <p className="text-sm text-muted-foreground">
+                Jump to a section or reach out directly.
+              </p>
+            </div>
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto px-6 pb-10">
+            <div className="mt-6">
+              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Sections</p>
+              <nav className="mt-4 space-y-3">
+                {menuLinks.map((item, index) => (
+                  <MenuLinkCard key={item.id} {...item} index={index} setOpen={setOpen} />
+                ))}
+              </nav>
+            </div>
+
+            <div className="mt-10">
+              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Connect</p>
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                {PROFILE.socials.map((s) => (
+                  <SocialTile key={s.label} s={s} setOpen={setOpen} />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Snapshot</p>
+              {/* Use 2 columns in the narrow sheet to prevent crowding */}
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                {menuStats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border dark:border-emerald-900/40 bg-card dark:bg-neutral-900/40 px-4 py-3 text-sm"
+                  >
+                    <div className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">{stat.label}</div>
+                    {/* Tighter leading and clamp to avoid overflow for long locations */}
+                    <div className="mt-2 text-base sm:text-lg font-semibold leading-snug break-words line-clamp-2 text-emerald-600 dark:text-emerald-300">
+                      {stat.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="relative min-h-screen bg-background text-foreground transition-colors">
       <CircuitBackground />
 
-      <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border dark:border-emerald-800/40 bg-background/60">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-4">
-            <div className="h-8 w-8 rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/40 grid place-items-center">
-              <CircuitBoard className="h-4 w-4 text-emerald-400" />
+      <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border dark:border-emerald-800/40 bg-background/80 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo/Brand Section */}
+            <div className="flex items-center gap-4 min-w-0 flex-1 mr-4">
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/40 grid place-items-center flex-shrink-0">
+                <CircuitBoard className="h-5 w-5 text-emerald-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-bold truncate text-foreground">{PROFILE.name}</div>
+                <div className="text-xs text-emerald-700/80 dark:text-emerald-300/80 truncate hidden sm:block">{PROFILE.title}</div>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold truncate">{PROFILE.name}</div>
-              <div className="text-xs text-emerald-700/80 dark:text-emerald-300/80 truncate hidden sm:block">{PROFILE.title}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 sm:gap-2">
-            {/* Desktop social links */}
-            <div className="hidden md:flex items-center gap-1">
-              {PROFILE.socials.map((s) => (
-                <Button key={s.label} variant="ghost" size="icon" asChild className="hover:bg-emerald-500/10">
-                  <a href={s.href} aria-label={s.label}>
-                    <s.icon className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
-                  </a>
-                </Button>
-              ))}
-            </div>
-            
-            {/* Theme toggle - always visible */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setDark((d) => !d)}
-              aria-label="Toggle theme"
-              className="border hover:bg-accent"
-            >
-              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
 
-            {/* Developer tests */}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="ml-2 bg-background border text-foreground hover:bg-accent/30">
-                  Dev
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-background border text-foreground">
-                <DialogHeader>
-                  <DialogTitle>Smoke tests</DialogTitle>
-                </DialogHeader>
-                <div className="mb-3 text-sm text-muted-foreground">
-                  Quick checks for icons, data, filtering, widgets, and routing.
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white border"
-                    onClick={() => setTests(runSmokeTests())}
-                  >
-                    Run
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              {/* Desktop social links */}
+              <div className="hidden md:flex items-center gap-2 mr-3">
+                {PROFILE.socials.map((s) => (
+                  <Button key={s.label} variant="ghost" size="icon" asChild className="hover:bg-emerald-500/10 h-9 w-9">
+                    <a href={s.href} aria-label={s.label}>
+                      <s.icon className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
+                    </a>
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300"
-                    onClick={() => setTests(null)}
-                  >
-                    Clear
+                ))}
+              </div>
+
+              {/* Theme toggle */}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setDark((d) => !d)}
+                aria-label="Toggle theme"
+                className="border-emerald-800/40 hover:bg-emerald-500/10 h-9 w-9"
+              >
+                {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+
+              {/* Developer tests */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="hidden sm:flex border-emerald-800/40 text-foreground hover:bg-emerald-500/10 h-9 px-4">
+                    Dev
                   </Button>
-                </div>
-                <div className="mt-3 grid gap-2">
-                  {tests?.map((t, i) => (
-                    <div
-                      key={i}
-                      className={`rounded-md border p-2 text-sm ${t.pass ? "border-green-400" : "border-red-400"}`}
+                </DialogTrigger>
+                <DialogContent className="bg-background border text-foreground">
+                  <DialogHeader>
+                    <DialogTitle>Smoke tests</DialogTitle>
+                  </DialogHeader>
+                  <div className="mb-3 text-sm text-muted-foreground">
+                    Quick checks for icons, data, filtering, widgets, and routing.
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white border"
+                      onClick={() => setTests(runSmokeTests())}
                     >
-                      <div className="font-medium">{t.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {t.pass ? "PASS" : "FAIL"}
-                        {t.details ? ` — ${t.details}` : ""}
-                      </div>
-                    </div>
-                  ))}
-                  {!tests && <div className="text-xs text-muted-foreground">No results yet.</div>}
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button className="ml-2 bg-emerald-600 hover:bg-emerald-500 text-white border">
-                  Menu
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="border-l border bg-background text-foreground p-0">
-                <div className="relative h-full overflow-hidden">
-                  <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute -top-24 right-[-40px] h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl opacity-60 dark:bg-emerald-500/20" />
-                    <div className="absolute -bottom-28 left-[-60px] h-60 w-60 rounded-full bg-emerald-400/15 blur-3xl opacity-60 dark:bg-emerald-400/20" />
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(16,185,129,0.08),_rgba(0,0,0,0)_60%)] dark:bg-[radial-gradient(circle_at_top,#0f172a,rgba(15,23,42,0)_60%)] opacity-60" />
+                      Run
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300"
+                      onClick={() => setTests(null)}
+                    >
+                      Clear
+                    </Button>
                   </div>
-                  <div className="relative z-10 flex h-full flex-col">
-                    <SheetHeader className="px-6 py-6 border dark:border-emerald-900/40">
-                      <div className="space-y-1">
-                        <p className="text-[11px] uppercase tracking-[0.35em] text-emerald-600/70 dark:text-emerald-400/70">Portfolio</p>
-                        <SheetTitle className="text-left text-2xl font-semibold">Navigate</SheetTitle>
-                        <p className="text-sm text-muted-foreground">
-                          Jump to a section or reach out directly.
-                        </p>
-                      </div>
-                    </SheetHeader>
-
-                    <div className="flex-1 overflow-y-auto px-6 pb-10">
-                      <div className="mt-6">
-                        <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Sections</p>
-                        <nav className="mt-4 space-y-3">
-                          {menuLinks.map((item, index) => (
-                            <MenuLinkCard key={item.id} {...item} index={index} />
-                          ))}
-                        </nav>
-                      </div>
-
-                      <div className="mt-10">
-                        <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Connect</p>
-                        <div className="mt-4 grid grid-cols-3 gap-3">
-                          {PROFILE.socials.map((s) => (
-                            <SocialTile key={s.label} s={s} />
-                          ))}
+                  <div className="mt-3 grid gap-2">
+                    {tests?.map((t, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-md border p-2 text-sm ${t.pass ? "border-green-400" : "border-red-400"}`}
+                      >
+                        <div className="font-medium">{t.name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {t.pass ? "PASS" : "FAIL"}
+                          {t.details ? ` — ${t.details}` : ""}
                         </div>
                       </div>
-
-                      <div className="mt-10">
-                        <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Snapshot</p>
-                        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                          {menuStats.map((stat) => (
-                            <div key={stat.label} className="rounded-xl border dark:border-emerald-900/40 bg-card dark:bg-neutral-900/40 px-4 py-3 text-sm">
-                              <div className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">{stat.label}</div>
-                              <div className="mt-2 text-lg font-semibold text-emerald-600 dark:text-emerald-300">{stat.value}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                    ))}
+                    {!tests && <div className="text-xs text-muted-foreground">No results yet.</div>}
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </DialogContent>
+              </Dialog>
+
+              {/* Mobile Menu Button */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button className="bg-emerald-600 hover:bg-emerald-500 text-white border h-9 px-4 font-medium">
+                    <span className="hidden sm:inline">Menu</span>
+                    <span className="sm:hidden">☰</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="border-l border bg-background text-foreground p-0 w-[90vw] sm:w-[400px] max-w-md">
+                  <SheetContentWrapper />
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </header>
@@ -365,235 +385,351 @@ function App() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* HERO */}
         {route.name === "home" && (
-          <section id="about" className="py-8 sm:py-12 lg:py-16">
-            <div className="grid lg:grid-cols-5 gap-6 lg:gap-8 items-center">
-              <div className="lg:col-span-3 space-y-4 sm:space-y-6">
-                <motion.h1
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] sm:leading-[1.1] lg:leading-[1.05] pb-1 overflow-visible bg-gradient-to-r from-emerald-300 via-teal-200 to-emerald-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-[0_8px_40px_rgba(16,185,129,.12)]"
-                >
-                  {PROFILE.name}
-                </motion.h1>
-                <p className="text-emerald-700/80 dark:text-emerald-300/80 text-sm sm:text-base">{PROFILE.title}</p>                <div className="mt-2 h-[3px] w-28 bg-gradient-to-r from-emerald-400 via-teal-300 to-transparent rounded-full" />
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                  className="leading-relaxed text-muted-foreground text-sm sm:text-base"
-                >
-                  {PROFILE.summary}
-                </motion.p>
-                <div className="flex flex-wrap gap-2">{PROFILE.location && <Pill>{PROFILE.location}</Pill>}
-                  <Pill>Open to roles</Pill>
-                  <Pill>Available for consulting</Pill>
+          <ScrollReveal delay={0.1} direction="fade" duration={1.2}>
+            <section id="about" className="py-8 sm:py-12 lg:py-16">
+              <div className="grid lg:grid-cols-5 gap-6 lg:gap-8 items-center">
+                <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+                  <motion.h1
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] sm:leading-[1.1] lg:leading-[1.05] pb-1 overflow-visible bg-gradient-to-r from-emerald-300 via-teal-200 to-emerald-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-[0_8px_40px_rgba(16,185,129,.12)]"
+                  >
+                    {PROFILE.name}
+                  </motion.h1>
+                  <p className="text-emerald-700/80 dark:text-emerald-300/80 text-sm sm:text-base">{PROFILE.title}</p>                <div className="mt-2 h-[3px] w-28 bg-gradient-to-r from-emerald-400 via-teal-300 to-transparent rounded-full" />
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className="leading-relaxed text-muted-foreground text-sm sm:text-base"
+                  >
+                    {PROFILE.summary}
+                  </motion.p>
+                  <div className="flex flex-wrap gap-2">{PROFILE.location && <Pill>{PROFILE.location}</Pill>}
+                    <Pill>Open to roles</Pill>
+                    <Pill>Available for consulting</Pill>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <div className="w-full sm:w-auto">
+                      <Button
+                        asChild
+                        className="flex bg-emerald-600 hover:bg-emerald-500 text-white border glow-emerald w-full sm:w-auto"
+                      >
+                        <a
+                          href="#projects"
+                          className="flex w-full items-center justify-center gap-2"
+                        >
+                          <Cpu className="h-4 w-4" />
+                          <span>View Projects</span>
+                        </a>
+                      </Button>
+                    </div>
+                    <div className="w-full sm:w-auto">
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="flex border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300 w-full sm:w-auto"
+                      >
+                        <a
+                          href="#contact"
+                          className="flex w-full items-center justify-center gap-2"
+                        >
+                          <Mail className="h-4 w-4" />
+                          <span>Contact</span>
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <div className="w-full sm:w-auto">
-                    <Button
-                      asChild
-                      className="flex bg-emerald-600 hover:bg-emerald-500 text-white border glow-emerald w-full sm:w-auto"
-                    >
-                      <a
-                        href="#projects"
-                        className="flex w-full items-center justify-center gap-2"
-                      >
-                        <Cpu className="h-4 w-4" />
-                        <span>View Projects</span>
-                      </a>
-                    </Button>
-                  </div>
-                  <div className="w-full sm:w-auto">
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="flex border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300 w-full sm:w-auto"
-                    >
-                      <a
-                        href="#contact"
-                        className="flex w-full items-center justify-center gap-2"
-                      >
-                        <Mail className="h-4 w-4" />
-                        <span>Contact</span>
-                      </a>
-                    </Button>
-                  </div>
+                <div className="lg:col-span-2 order-last">{/* LiveSignals will be responsive */}
+                  <LiveSignals />
                 </div>
               </div>
-              <div className="lg:col-span-2 order-last">{/* LiveSignals will be responsive */}
-                <LiveSignals />
+            </section>
+          </ScrollReveal>
+        )}
+
+        {route.name === "home" && <Separator className="bg-emerald-900/40" />}
+
+        {route.name === "home" && (
+          <ScrollReveal delay={0.2} direction="right" duration={1.0}>
+            <Section id="skills" title="Skills" icon={Wrench}>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {SKILLS.map(({ group, items }) => (
+                  <Card key={group} className="border dark:border-emerald-800/40 dark:bg-neutral-900/40">
+                    <CardHeader className="pb-3 sm:pb-4">
+                      <CardTitle className="text-base sm:text-lg">{group}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-wrap gap-2">
+                      {items.map((s) => (
+                        <Pill key={s}>{s}</Pill>
+                      ))}
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </div>
-          </section>
+            </Section>
+          </ScrollReveal>
         )}
 
-        {route.name === "home" && <Separator className="bg-border" />}
+        {route.name === "home" && <Separator className="bg-emerald-900/40" />}
 
         {route.name === "home" && (
-          <Section id="skills" title="Skills" icon={Wrench}>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {SKILLS.map(({ group, items }) => (
-                <Card key={group} className="border dark:border-emerald-800/40 dark:bg-neutral-900/40">
-                  <CardHeader className="pb-3 sm:pb-4">
-                    <CardTitle className="text-base sm:text-lg">{group}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex flex-wrap gap-2">
-                    {items.map((s) => (
-                      <Pill key={s}>{s}</Pill>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {route.name === "home" && <Separator className="bg-border" />}
-
-        {route.name === "home" && (
-          <Projects />
+          <ScrollReveal delay={0.2} direction="up">
+            <Projects />
+          </ScrollReveal>
         )}
 
         {route.name === "project" && <ProjectDetail slug={route.slug} />}
 
-        {route.name === "home" && <Separator className="bg-border" />}
+        {route.name === "home" && <Separator className="bg-emerald-900/40" />}
 
         {route.name === "home" && (
-          <Section id="experience" title="Experience" icon={FileText}>
-            <div className="grid gap-4">
-              {EXPERIENCE.map((e) => (
-                <Card key={e.role} className="border dark:border-emerald-800/40 dark:bg-neutral-900/40">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">
-                      {e.role} · {e.org}
-                    </CardTitle>
-                    <div className="text-xs text-muted-foreground">{e.period}</div>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc pl-5 text-sm space-y-1 text-muted-foreground">
-                      {e.bullets.map((b, i) => (
-                        <li key={i}>{b}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {route.name === "home" && <Separator className="bg-border" />}
-
-        {route.name === "home" && (
-          <Section id="publications" title="Publications" icon={GitBranch}>
-            <div className="grid md:grid-cols-2 gap-4">
-              {PUBLICATIONS.map((p) => (
-                <Card key={p.title} className="border dark:border-emerald-800/40 dark:bg-neutral-900/40">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">{p.title}</CardTitle>
-                    <div className="text-xs text-muted-foreground">{p.venue}</div>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300"
+          <ScrollReveal delay={0.4} direction="up" duration={1.1}>
+            <Section id="experience" title="Experience" icon={FileText}>
+              <div className="max-w-4xl mx-auto">
+                <div className="grid gap-6 md:gap-8">
+                  {EXPERIENCE.map((e, index) => (
+                    <motion.div
+                      key={e.role}
+                      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{
+                        delay: index * 0.15,
+                        duration: 0.6,
+                        ease: [0.21, 0.47, 0.32, 0.98]
+                      }}
                     >
-                      <a href={p.link}>
-                        <Link className="h-3 w-3 mr-1" />View
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {route.name === "home" && <Separator className="bg-border" />}
-
-        {route.name === "home" && (
-          <Section id="docs" title="Documentation" icon={FileText}>
-            <Card className="border dark:border-emerald-800/40 dark:bg-neutral-900/40">
-              <CardContent className="pt-6 text-sm text-muted-foreground space-y-2">
-                <p>
-                  <strong>Stack:</strong> React + Tailwind + shadcn/ui + framer-motion. Icons:
-                  lucide-react.
-                </p>
-                <p>
-                  <strong>Customize:</strong> Edit the data files in src/data/ to modify content.
-                  Colors use Tailwind classes; change <code>emerald</code> to your palette.
-                </p>
-                <p>
-                  <strong>Routing:</strong> Clicking a project routes to <code>#/project/&lt;slug&gt;</code>.
-                  Use the Back button or open in a new tab.
-                </p>
-                <p>
-                  <strong>Deploy:</strong> Works in static hosting because routing uses
-                  <code> hashchange</code>.
-                </p>
-                <p>
-                  <strong>Testing:</strong> Use the <em>Dev</em> button in the header to run smoke
-                  tests.
-                </p>
-              </CardContent>
-            </Card>
-          </Section>
-        )}
-
-        {route.name === "home" && <Separator className="bg-border" />}
-
-        {route.name === "home" && (
-          <Section id="contact" title="Contact" icon={Mail}>
-            <Card className="border dark:border-emerald-800/40 dark:bg-neutral-900/40">
-              <CardContent className="pt-6">
-                <div className="text-sm text-muted-foreground mb-4">
-                  {CTA.availability} {CTA.note}
+                      <Card className="bg-neutral-900/40 border-emerald-800/40 hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
+                        <CardHeader className="pb-4">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                  <FileText className="h-5 w-5 text-emerald-400" />
+                                </div>
+                                <div>
+                                  <CardTitle className="text-lg sm:text-xl text-emerald-300 group-hover:text-emerald-200 transition-colors">
+                                    {e.role}
+                                  </CardTitle>
+                                  <p className="text-sm sm:text-base text-neutral-300 font-medium">
+                                    {e.org}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex-shrink-0">
+                              <div className="text-right">
+                                <div className="text-sm font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                                  {e.period}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="space-y-3">
+                            {e.bullets.map((bullet, i) => (
+                              <div key={i} className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
+                                <span className="text-sm sm:text-base text-neutral-300 leading-relaxed">
+                                  {bullet}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
                 </div>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    alert("This is a static demo. Wire this to an API.");
-                  }}
-                  className="grid gap-4 sm:grid-cols-2"
-                >
-                  <Input placeholder="Your name" required className="" />
-                  <Input
-                    type="email"
-                    placeholder="Your email"
-                    required
-                    className=""
-                  />
-                  <Textarea
-                    placeholder="Project or role details"
-                    className="sm:col-span-2"
-                    rows={5}
-                    required
-                  />
-                  <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3">
-                    <Button
-                      type="submit"
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white border w-full sm:w-auto"
-                    >
-                      Send
-                    </Button>
-                    <Button
-                      variant="outline"
-                      asChild
-                      className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300 w-full sm:w-auto"
-                    >
-                      <a href={`mailto:${PROFILE.email}`}>Email me</a>
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </Section>
+              </div>
+            </Section>
+          </ScrollReveal>
         )}
 
-        <footer className="py-10 text-center text-xs text-muted-foreground">
+        {route.name === "home" && <Separator className="bg-emerald-900/40" />}
+
+        {route.name === "home" && (
+          <ScrollReveal delay={0.5} direction="right" duration={1.0}>
+            <Section id="publications" title="Publications" icon={GitBranch}>
+              <div className="grid gap-6 md:gap-8">
+                {PUBLICATIONS.map((p, index) => (
+                  <motion.div
+                    key={p.title}
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{
+                      delay: index * 0.15,
+                      duration: 0.6,
+                      ease: [0.21, 0.47, 0.32, 0.98]
+                    }}
+                  >
+                    <Card className="bg-neutral-900/40 border-emerald-800/40 hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
+                      <div className="flex flex-col sm:flex-row">
+                        {/* Publication type indicator */}
+                        <div className="flex-shrink-0 w-full sm:w-16 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
+                          <div className="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                            <FileText className="h-4 w-4 text-emerald-300" />
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 p-6">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                              <CardTitle className="text-lg sm:text-xl text-emerald-300 group-hover:text-emerald-200 transition-colors leading-tight mb-2">
+                                {p.title}
+                              </CardTitle>
+                              <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
+                                <span className="inline-flex items-center gap-1.5">
+                                  <GitBranch className="h-3.5 w-3.5" />
+                                  {p.venue}
+                                </span>
+                                <span className="text-emerald-400/60">•</span>
+                                <span className="text-xs uppercase tracking-wide font-medium text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                  Conference Paper
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex-shrink-0">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="border-emerald-700/50 text-emerald-300 hover:bg-emerald-500/10 hover:border-emerald-600/60 transition-all duration-200"
+                              >
+                                <a href={p.link} className="inline-flex items-center gap-2">
+                                  <Link className="h-3.5 w-3.5" />
+                                  <span className="hidden sm:inline">View Paper</span>
+                                  <span className="sm:hidden">View</span>
+                                </a>
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Abstract preview or additional info could go here */}
+                          <div className="mt-4 pt-4 border-t border-emerald-800/30">
+                            <p className="text-sm text-neutral-400 leading-relaxed">
+                              Research publication on advanced protection and control systems for power electronics.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Additional publications info */}
+              <div className="mt-8 text-center">
+                <p className="text-sm text-neutral-400">
+                  More publications and research work available on{' '}
+                  <a href="#" className="text-emerald-400 hover:text-emerald-300 transition-colors underline">
+                    Google Scholar
+                  </a>{' '}
+                  and{' '}
+                  <a href="#" className="text-emerald-400 hover:text-emerald-300 transition-colors underline">
+                    ResearchGate
+                  </a>
+                </p>
+              </div>
+            </Section>
+          </ScrollReveal>
+        )}
+
+        {route.name === "home" && <Separator className="bg-emerald-900/40" />}
+
+        {route.name === "home" && (
+          <ScrollReveal delay={0.6} direction="fade" duration={0.9}>
+            <Section id="docs" title="Documentation" icon={FileText}>
+              <Card className="bg-neutral-900/40 border-emerald-800/40">
+                <CardContent className="pt-6 text-sm text-neutral-300 space-y-2">
+                  <p>
+                    <strong>Stack:</strong> React + Tailwind + shadcn/ui + framer-motion. Icons:
+                    lucide-react.
+                  </p>
+                  <p>
+                    <strong>Customize:</strong> Edit the data files in src/data/ to modify content.
+                    Colors use Tailwind classes; change <code>emerald</code> to your palette.
+                  </p>
+                  <p>
+                    <strong>Routing:</strong> Clicking a project routes to <code>#/project/&lt;slug&gt;</code>.
+                    Use the Back button or open in a new tab.
+                  </p>
+                  <p>
+                    <strong>Deploy:</strong> Works in static hosting because routing uses
+                    <code> hashchange</code>.
+                  </p>
+                  <p>
+                    <strong>Testing:</strong> Use the <em>Dev</em> button in the header to run smoke
+                    tests.
+                  </p>
+                </CardContent>
+              </Card>
+            </Section>
+          </ScrollReveal>
+        )}
+
+        {route.name === "home" && <Separator className="bg-emerald-900/40" />}
+
+        {route.name === "home" && (
+          <ScrollReveal delay={0.7} direction="left" duration={1.0}>
+            <Section id="contact" title="Contact" icon={Mail}>
+              <Card className="bg-neutral-900/40 border-emerald-800/40">
+                <CardContent className="pt-6">
+                  <div className="text-sm text-neutral-300 mb-4">
+                    {CTA.availability} {CTA.note}
+                  </div>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      alert("This is a static demo. Wire this to an API.");
+                    }}
+                    className="grid gap-4 sm:grid-cols-2"
+                  >
+                    <Input
+                      placeholder="Your name"
+                      required
+                      className="bg-neutral-900/60 border-emerald-800/40 text-neutral-100 placeholder-neutral-500 focus-visible:ring-emerald-500/30"
+                    />
+                    <Input
+                      type="email"
+                      placeholder="Your email"
+                      required
+                      className="bg-neutral-900/60 border-emerald-800/40 text-neutral-100 placeholder-neutral-500 focus-visible:ring-emerald-500/30"
+                    />
+                    <Textarea
+                      placeholder="Project or role details"
+                      className="sm:col-span-2 bg-neutral-900/60 border-emerald-800/40 text-neutral-100 placeholder-neutral-500 focus-visible:ring-emerald-500/30"
+                      rows={5}
+                      required
+                    />
+                    <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3">
+                      <Button
+                        type="submit"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/40 w-full sm:w-auto"
+                      >
+                        Send
+                      </Button>
+                      <Button
+                        variant="outline"
+                        asChild
+                        className="border-emerald-700/50 text-emerald-300 hover:bg-emerald-500/10 w-full sm:w-auto"
+                      >
+                        <a href={`mailto:${PROFILE.email}`}>Email me</a>
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </Section>
+          </ScrollReveal>
+        )}
+
+        <footer className="py-10 text-center text-xs text-neutral-400">
           © {new Date().getFullYear()} {PROFILE.name}. Circuit theme by you.
         </footer>
       </main>
@@ -602,6 +738,12 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
 
 
 
