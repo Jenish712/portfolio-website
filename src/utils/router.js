@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 // Parse the current hash to determine the route
 export function parseRoute(hash) {
   const h = hash.replace(/^#/, "");
+  if (h === "/admin" || h.startsWith("/admin")) {
+    return { name: "admin" };
+  }
   if (h.startsWith("/project/")) {
     const slug = h.split("/project/")[1]?.split("?")[0] || "";
     return { name: "project", slug };

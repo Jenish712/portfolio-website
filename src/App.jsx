@@ -13,10 +13,12 @@ import { Section, Pill } from "./components/ui/section";
 import { ScrollReveal } from "./components/ui/scroll-reveal";
 import { Projects } from "./components/Projects";
 import { ProjectDetail } from "./components/ProjectDetail";
+import { Admin } from "./pages/Admin";
 import { useHashRoute } from "./utils/router";
 import { PROFILE } from "./data/profile";
 import { SKILLS } from "./data/skills";
 import { PROJECTS } from "./data/projects";
+import { getAllProjects } from "./data/projects-store";
 import { EXPERIENCE } from "./data/experience";
 import { HIGHLIGHTS, PUBLICATIONS, CTA } from "./data/misc";
 import {
@@ -107,7 +109,7 @@ function App() {
   const [tests, setTests] = useState(null);
   const route = useHashRoute();
 
-  const projectsCount = PROJECTS.length;
+  const projectsCount = getAllProjects().length;
   const experienceCount = EXPERIENCE.length;
   const baseLocation = PROFILE.location;
 
@@ -482,6 +484,11 @@ function App() {
         )}
 
         {route.name === "project" && <ProjectDetail slug={route.slug} />}
+        {route.name === "admin" && (
+          <ScrollReveal delay={0.1} direction="fade">
+            <Admin />
+          </ScrollReveal>
+        )}
 
         {route.name === "home" && <Separator className="bg-emerald-900/40" />}
 

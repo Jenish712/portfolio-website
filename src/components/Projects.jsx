@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollReveal } from "./ui/scroll-reveal";
 import { ProjectCard } from "./ProjectCard";
-import { PROJECTS } from "../data/projects";
+import { getAllProjects } from "../data/projects-store";
 import { FolderOpen, Search, SortDesc, Filter, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,13 +16,15 @@ export function Projects() {
   
   // Get unique categories
   const categories = useMemo(() => {
-    const cats = [...new Set(PROJECTS.map(p => p.category))];
+    const ALL = getAllProjects();
+    const cats = [...new Set(ALL.map(p => p.category))];
     return ["all", ...cats];
   }, []);
 
   // Filter and sort projects
   const filteredAndSortedProjects = useMemo(() => {
-    let filtered = PROJECTS;
+    const ALL = getAllProjects();
+    let filtered = ALL;
     
     // Filter by category
     if (activeTab !== "all") {
@@ -151,9 +153,10 @@ export function Projects() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full overflow-x-auto whitespace-nowrap flex gap-2 bg-card/60 dark:bg-neutral-900/40 border dark:border-emerald-800/40 p-1 rounded-md md:grid md:grid-cols-2 lg:grid-cols-4 md:whitespace-normal md:overflow-visible">
             {categories.map((category) => {
+              const ALL = getAllProjects();
               const count = category === "all" 
-                ? PROJECTS.length 
-                : PROJECTS.filter(p => p.category === category).length;
+                ? ALL.length 
+                : ALL.filter(p => p.category === category).length;
               
               return (
                 <TabsTrigger 
@@ -176,7 +179,7 @@ export function Projects() {
               {filteredAndSortedProjects.length === 0 ? (
                 "No projects found"
               ) : (
-                `Showing ${filteredAndSortedProjects.length} of ${PROJECTS.length} projects`
+                `Showing ${filteredAndSortedProjects.length} of ${getAllProjects().length} projects`
               )}
             </div>
             {sortBy !== "recent" && (
@@ -243,6 +246,5 @@ export function Projects() {
     </ScrollReveal>
   );
 }
-
 
 

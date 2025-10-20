@@ -17,7 +17,7 @@ import {
   Check,
   Image as ImageIcon,
 } from "lucide-react";
-import { PROJECTS } from "../data/projects";
+import { getProjectBySlug } from "../data/projects-store";
 import { motion } from "framer-motion";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -104,7 +104,7 @@ function CodeSnippet({ snippet, id, onCopy, copied }) {
 
 export function ProjectDetail({ slug }) {
   const [copiedId, setCopiedId] = useState(null);
-  const project = useMemo(() => PROJECTS.find((p) => p.slug === slug), [slug]);
+  const project = useMemo(() => getProjectBySlug(slug), [slug]);
 
   if (!project) {
     return (
