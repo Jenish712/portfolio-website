@@ -3,109 +3,107 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-enum ProjectStatus {
-  draft
-  published
-}
-
 model Project {
-  id              String           @id @default(uuid())
+  id              String            @id @default(uuid())
   title           String
-  slug            String           @unique
+  slug            String            @unique
   category        String?
   description     String?
   longDescription String?
   summary         String?
-  content         Json             @default("[]")
-  tech            Json             @default("[]")
-  tags            Json             @default("[]")
-  highlights      Json             @default("[]")
+  content         Json              @default("[]")
+  tech            Json              @default("[]")
+  tags            Json              @default("[]")
+  highlights      Json              @default("[]")
   timeline        String?
   team            String?
-  status          ProjectStatus    @default(draft)
-  version         Int              @default(1)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-
+  status          ProjectStatus     @default(draft)
+  version         Int               @default(1)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  sections        DetailSection[]
+  gallery         ProjectGallery[]
   links           ProjectLink[]
   metrics         ProjectMetric[]
-  gallery         ProjectGallery[]
-  sections        DetailSection[]
   revisions       ProjectRevision[]
 }
 
 model ProjectLink {
   id        String  @id @default(uuid())
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   label     String
   url       String
   order     Int     @default(0)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId, order])
 }
 
 model ProjectMetric {
   id        String  @id @default(uuid())
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   label     String
   value     String
   order     Int     @default(0)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId, order])
 }
 
 model ProjectGallery {
   id        String  @id @default(uuid())
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   src       String
   alt       String
   caption   String?
   order     Int     @default(0)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId, order])
 }
 
 model DetailSection {
-  id        String  @id @default(uuid())
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id        String        @id @default(uuid())
   projectId String
   heading   String
-  body      Json     @default("[]")
+  body      Json          @default("[]")
   bullets   Json?
   image     Json?
-  order     Int      @default(0)
-
+  order     Int           @default(0)
   snippets  CodeSnippet[]
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId, order])
 }
 
 model CodeSnippet {
-  id         String        @id @default(uuid())
-  section    DetailSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  sectionId  String
-  title      String
-  language   String
-  code       String
-  order      Int           @default(0)
+  id        String        @id @default(uuid())
+  sectionId String
+  title     String
+  language  String
+  code      String
+  order     Int           @default(0)
+  section   DetailSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@index([sectionId, order])
 }
 
 model ProjectRevision {
   id        String   @id @default(uuid())
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   version   Int
   actorId   String?
   summary   String?
   diff      Json?
   createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum ProjectStatus {
+  draft
+  published
 }

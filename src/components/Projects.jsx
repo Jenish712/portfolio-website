@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Section, Pill } from "./ui/section";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
@@ -6,6 +6,7 @@ import { Input } from "./ui/input";
 import { ScrollReveal } from "./ui/scroll-reveal";
 import { ProjectCard } from "./ProjectCard";
 import { getAllProjects } from "../data/projects-store";
+import { api } from "../utils/api";
 import { FolderOpen, Search, SortDesc, Filter, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,18 +14,60 @@ export function Projects() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent"); // recent, title, category
+  const [apiProjects, setApiProjects] = useState([]);
+  const [loadingApi, setLoadingApi] = useState(false);
+  
+  // Fetch published projects from API
+  useEffect(() => {
+    const fetchApiProjects = async () => {
+      // Check if API is configured
+      const apiConfigured = Boolean(process.env.REACT_APP_API_URL);
+      
+      console.log('[Projects] useEffect running');
+      console.log('[Projects] API configured:', apiConfigured);
+      console.log('[Projects] REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+      
+      if (!apiConfigured) {
+        console.log('[Projects] API not configured, skipping fetch');
+        return;
+      }
+
+      setLoadingApi(true);
+      try {
+        console.log('[Projects] Fetching published projects from API...');
+        const response = await api.list({ status: 'published', pageSize: 50 });
+        console.log('[Projects] API response:', response);
+        setApiProjects(response.items || []);
+      } catch (error) {
+        console.error('[Projects] Failed to fetch API projects:', error);
+        setApiProjects([]);
+      } finally {
+        setLoadingApi(false);
+      }
+    };
+
+    // Temporarily disabled - check browser console for errors
+    // fetchApiProjects();
+  }, []);
+
+  // Get all projects (static + local + API)
+  const allProjects = useMemo(() => {
+    const staticAndLocal = getAllProjects();
+    // Combine with API projects, avoiding duplicates by slug
+    const existingSlugs = new Set(staticAndLocal.map(p => p.slug));
+    const uniqueApiProjects = apiProjects.filter(p => !existingSlugs.has(p.slug));
+    return [...staticAndLocal, ...uniqueApiProjects];
+  }, [apiProjects]);
   
   // Get unique categories
   const categories = useMemo(() => {
-    const ALL = getAllProjects();
-    const cats = [...new Set(ALL.map(p => p.category))];
+    const cats = [...new Set(allProjects.map(p => p.category))];
     return ["all", ...cats];
-  }, []);
+  }, [allProjects]);
 
   // Filter and sort projects
   const filteredAndSortedProjects = useMemo(() => {
-    const ALL = getAllProjects();
-    let filtered = ALL;
+    let filtered = allProjects;
     
     // Filter by category
     if (activeTab !== "all") {
@@ -57,7 +100,7 @@ export function Projects() {
     }
     
     return filtered;
-  }, [activeTab, searchQuery, sortBy]);
+  }, [allProjects, activeTab, searchQuery, sortBy]);
 
   const clearSearch = () => {
     setSearchQuery("");
@@ -153,10 +196,9 @@ export function Projects() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full overflow-x-auto whitespace-nowrap flex gap-2 bg-card/60 dark:bg-neutral-900/40 border dark:border-emerald-800/40 p-1 rounded-md md:grid md:grid-cols-2 lg:grid-cols-4 md:whitespace-normal md:overflow-visible">
             {categories.map((category) => {
-              const ALL = getAllProjects();
               const count = category === "all" 
-                ? ALL.length 
-                : ALL.filter(p => p.category === category).length;
+                ? allProjects.length 
+                : allProjects.filter(p => p.category === category).length;
               
               return (
                 <TabsTrigger 
@@ -179,7 +221,7 @@ export function Projects() {
               {filteredAndSortedProjects.length === 0 ? (
                 "No projects found"
               ) : (
-                `Showing ${filteredAndSortedProjects.length} of ${getAllProjects().length} projects`
+                `Showing ${filteredAndSortedProjects.length} of ${allProjects.length} projects`
               )}
             </div>
             {sortBy !== "recent" && (

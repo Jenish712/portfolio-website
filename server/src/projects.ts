@@ -8,33 +8,40 @@ const router: Router = Router();
 
 // GET /projects
 router.get('/', async (req, res) => {
-  const page = Math.max(1, parseInt(String(req.query.page || '1'), 10));
-  const pageSize = Math.min(50, Math.max(1, parseInt(String(req.query.pageSize || '12'), 10)));
-  const query = String(req.query.query || '').trim();
-  const tag = String(req.query.tag || '').trim();
+  try {
+    const page = Math.max(1, parseInt(String(req.query.page || '1'), 10));
+    const pageSize = Math.min(50, Math.max(1, parseInt(String(req.query.pageSize || '12'), 10)));
+    const query = String(req.query.query || '').trim();
+    const tag = String(req.query.tag || '').trim();
+    const status = String(req.query.status || '').trim();
 
-  const where: any = {};
-  if (query) where.OR = [
-    { title: { contains: query, mode: 'insensitive' } },
-    { summary: { contains: query, mode: 'insensitive' } },
-    { description: { contains: query, mode: 'insensitive' } },
-  ];
-  if (tag) where.tags = { array_contains: tag } as any; // handled via JSON query below if needed
+    const where: any = {};
+    if (query) where.OR = [
+      { title: { contains: query, mode: 'insensitive' } },
+      { summary: { contains: query, mode: 'insensitive' } },
+      { description: { contains: query, mode: 'insensitive' } },
+    ];
+    if (tag) where.tags = { array_contains: tag } as any; // handled via JSON query below if needed
+    if (status) where.status = status;
 
-  const [items, total] = await Promise.all([
-    prisma.project.findMany({
-      where,
-      orderBy: { updatedAt: 'desc' },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      select: {
-        id: true, title: true, slug: true, summary: true, tags: true, status: true, updatedAt: true
-      }
-    }),
-    prisma.project.count({ where })
-  ]);
+    const [items, total] = await Promise.all([
+      prisma.project.findMany({
+        where,
+        orderBy: { updatedAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true, title: true, slug: true, summary: true, tags: true, status: true, updatedAt: true
+        }
+      }),
+      prisma.project.count({ where })
+    ]);
 
-  res.json({ items, page, pageSize, total });
+    res.json({ items, page, pageSize, total });
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ error: 'Failed to fetch projects', items: [], total: 0, page: 1, pageSize: 12 });
+  }
 });
 
 // GET /projects/:slug

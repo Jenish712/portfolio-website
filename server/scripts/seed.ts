@@ -1,15 +1,16 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { PrismaClient } from '@prisma/client';
 
-// Load PROJECTS from the frontend file
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '../../');
-const frontendPath = path.resolve(root, '../src/data/projects.js');
+const frontendPath = path.resolve(root, 'src/data/projects.js');
+// Load .env from server folder and override any existing env vars (like a user-level DATABASE_URL)
+dotenv.config({ path: path.resolve(__dirname, '../.env'), override: true });
 
 // dynamic import of ESM/JS file
-const { PROJECTS } = await import(frontendPath);
+const { PROJECTS } = await import(pathToFileURL(frontendPath).href);
 
 const prisma = new PrismaClient();
 

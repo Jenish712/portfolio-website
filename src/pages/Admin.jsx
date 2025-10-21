@@ -7,8 +7,12 @@ import { Separator } from "../components/ui/separator";
 import { Badge } from "../components/ui/badge";
 import { addProject, getExtraProjects, removeProjectBySlug } from "../data/projects-store";
 import { api } from "../utils/api";
-import { Lock, Plus, Trash2, Shield, Eye, EyeOff, LogOut, Settings } from "lucide-react";
+import { Lock, Plus, Trash2, Shield, Eye, EyeOff, LogOut, Settings, Save, Wand2, Pencil } from "lucide-react";
 import { Led } from "../components/ui/led";
+import { StringListEditor } from "../components/admin/StringListEditor";
+import { LinksEditor, MetricsEditor, GalleryEditor } from "../components/admin/StructuredArrays";
+import { DetailSectionsEditor } from "../components/admin/DetailSectionsEditor";
+import { JsonPreview } from "../components/admin/JsonPreview";
 
 const ADMIN_ID = process.env.REACT_APP_ADMIN_ID;
 const ADMIN_KEY = process.env.REACT_APP_ADMIN_KEY;
@@ -29,6 +33,28 @@ export function Admin() {
   const [saving, setSaving] = useState(false);
   const [token, setToken] = useState("");
   const [remoteList, setRemoteList] = useState(null);
+  const emptyProject = useMemo(() => ({
+    title: "",
+    slug: "",
+    category: "",
+    description: "",
+    longDescription: "",
+    summary: "",
+    content: [],
+    tech: [],
+    tags: [],
+    highlights: [],
+    links: [],
+    metrics: [],
+    gallery: [],
+    detailSections: [],
+    timeline: "",
+    team: "",
+    status: "draft",
+    version: 1,
+  }), []);
+  const [proj, setProj] = useState(emptyProject);
+  const [editingId, setEditingId] = useState(null);
   const extras = getExtraProjects();
 
   useEffect(() => {
@@ -143,6 +169,61 @@ export function Admin() {
       .replace(/(^-|-$)/g, ""),
     [form.title]
   );
+
+  const genSlug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+  const saveAdvanced = async (publish) => {
+    if (!apiConfigured || !token) {
+      alert("Backend API not configured or not logged in.");
+      return;
+    }
+    // minimal validation for required alts when images are provided
+    if (Array.isArray(proj.gallery)) {
+      for (const g of proj.gallery) {
+        if ((g?.src || '').trim() && !(g?.alt || '').trim()) {
+          alert('Gallery images require an Alt description.');
+          return;
+        }
+      }
+    }
+    if (Array.isArray(proj.detailSections)) {
+      for (const s of proj.detailSections) {
+        if (s?.image && (s.image.src || '').trim() && !(s.image.alt || '').trim()) {
+          alert('Section image requires an Alt description.');
+          return;
+        }
+      }
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        ...proj,
+        slug: proj.slug || genSlug(proj.title || ""),
+        status: publish ? "published" : "draft",
+        // Filter out empty/invalid entries
+        links: (proj.links || []).filter(l => l?.label?.trim() && l?.url?.trim()),
+        metrics: (proj.metrics || []).filter(m => m?.label?.trim() && m?.value?.trim()),
+        gallery: (proj.gallery || []).filter(g => g?.src?.trim() && g?.alt?.trim()),
+      };
+      if (!payload.title?.trim()) {
+        alert("Title is required");
+        return;
+      }
+      if (editingId) {
+        await api.update(editingId, payload, token);
+      } else {
+        await api.create({ ...payload, version: 1 }, token);
+      }
+      const data = await api.list({ pageSize: 50 });
+      setRemoteList(data.items || []);
+      alert(publish ? "Published" : "Saved draft");
+    } catch (e) {
+      console.error(e);
+      alert("Save failed: " + (e?.message || e));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (!authed) {
     return (
@@ -425,23 +506,68 @@ export function Admin() {
                               </div>
                             )}
                           </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={async () => {
-                              if (!window.confirm(`Delete "${p.title}"?`)) return;
-                              try {
-                                await api.remove(p.id, token);
-                                const data = await api.list({ pageSize: 50 });
-                                setRemoteList(data.items || []);
-                              } catch (e) {
-                                alert('Failed to delete via API');
-                              }
-                            }}
-                            className="border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/60 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={async () => {
+                                try {
+                                  const full = await api.get(p.slug);
+                                  setProj({
+                                    title: full.title || "",
+                                    slug: full.slug || "",
+                                    category: full.category || "",
+                                    description: full.description || "",
+                                    longDescription: full.longDescription || "",
+                                    summary: full.summary || "",
+                                    content: Array.isArray(full.content) ? full.content : [],
+                                    tech: Array.isArray(full.tech) ? full.tech : [],
+                                    tags: Array.isArray(full.tags) ? full.tags : [],
+                                    highlights: Array.isArray(full.highlights) ? full.highlights : [],
+                                    links: full.links || [],
+                                    metrics: full.metrics || [],
+                                    gallery: full.gallery || [],
+                                    detailSections: (full.sections || []).map((s) => ({
+                                      heading: s.heading || "",
+                                      body: Array.isArray(s.body) ? s.body : [],
+                                      bullets: Array.isArray(s.bullets) ? s.bullets : [],
+                                      codeSnippets: Array.isArray(s.snippets) ? s.snippets : [],
+                                      image: s.image || null,
+                                      order: s.order,
+                                    })),
+                                    timeline: full.timeline || "",
+                                    team: full.team || "",
+                                    status: full.status || "draft",
+                                    version: full.version || 1,
+                                  });
+                                  setEditingId(full.id);
+                                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                                } catch (e) {
+                                  alert('Failed to load project');
+                                }
+                              }}
+                              className="border-emerald-600/40 text-emerald-300 hover:bg-emerald-500/10"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={async () => {
+                                if (!window.confirm(`Delete "${p.title}"?`)) return;
+                                try {
+                                  await api.remove(p.id, token);
+                                  const data = await api.list({ pageSize: 50 });
+                                  setRemoteList(data.items || []);
+                                } catch (e) {
+                                  alert('Failed to delete via API');
+                                }
+                              }}
+                              className="border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/60"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -501,7 +627,105 @@ export function Admin() {
             </CardContent>
           </Card>
         </div>
-        
+        {/* Advanced Editor */}
+        {apiConfigured && token && (
+          <div className="mt-8 grid lg:grid-cols-3 gap-6">
+            <Card className="border border-emerald-800/40 bg-neutral-900/60 backdrop-blur-sm shadow-xl lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-emerald-300 flex items-center gap-2">Advanced Editor</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-emerald-300">Title</label>
+                    <Input value={proj.title} onChange={(e) => setProj({ ...proj, title: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-emerald-300">Slug</label>
+                    <div className="flex gap-2">
+                      <Input value={proj.slug} onChange={(e) => setProj({ ...proj, slug: e.target.value })} />
+                      <Button type="button" variant="outline" onClick={() => setProj({ ...proj, slug: genSlug(proj.title) })}><Wand2 className="h-4 w-4" /></Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-emerald-300">Category</label>
+                    <Input value={proj.category} onChange={(e) => setProj({ ...proj, category: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-emerald-300">Status</label>
+                    <select value={proj.status} onChange={(e) => setProj({ ...proj, status: e.target.value })} className="bg-neutral-800/60 border border-emerald-700/30 rounded-md px-2 py-2 text-sm w-full">
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-emerald-300">Summary</label>
+                    <Textarea rows={2} value={proj.summary} onChange={(e) => setProj({ ...proj, summary: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-emerald-300">Timeline / Team</label>
+                    <Input placeholder="Timeline" value={proj.timeline || ''} onChange={(e) => setProj({ ...proj, timeline: e.target.value })} />
+                    <Input placeholder="Team" value={proj.team || ''} onChange={(e) => setProj({ ...proj, team: e.target.value })} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-emerald-300">Short Description</label>
+                  <Textarea rows={3} value={proj.description} onChange={(e) => setProj({ ...proj, description: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-emerald-300">Long Description</label>
+                  <Textarea rows={6} value={proj.longDescription || ''} onChange={(e) => setProj({ ...proj, longDescription: e.target.value })} />
+                </div>
+
+                <details className="rounded-md border border-emerald-800/40 p-3" open>
+                  <summary className="cursor-pointer text-emerald-300">Content & Tags</summary>
+                  <div className="mt-3 grid sm:grid-cols-2 gap-4">
+                    <StringListEditor title="Content" items={proj.content} onChange={(v) => setProj({ ...proj, content: v })} placeholder="Paragraph" />
+                    <StringListEditor title="Highlights" items={proj.highlights} onChange={(v) => setProj({ ...proj, highlights: v })} placeholder="Highlight" />
+                    <StringListEditor title="Tech" items={proj.tech} onChange={(v) => setProj({ ...proj, tech: v })} placeholder="e.g., React" />
+                    <StringListEditor title="Tags" items={proj.tags} onChange={(v) => setProj({ ...proj, tags: v })} placeholder="e.g., Frontend" />
+                  </div>
+                </details>
+
+                <details className="rounded-md border border-emerald-800/40 p-3" open>
+                  <summary className="cursor-pointer text-emerald-300">Links, Metrics & Gallery</summary>
+                  <div className="mt-3 space-y-6">
+                    <LinksEditor items={proj.links} onChange={(v) => setProj({ ...proj, links: v })} />
+                    <MetricsEditor items={proj.metrics} onChange={(v) => setProj({ ...proj, metrics: v })} />
+                    <GalleryEditor items={proj.gallery} onChange={(v) => setProj({ ...proj, gallery: v })} />
+                  </div>
+                </details>
+
+                <details className="rounded-md border border-emerald-800/40 p-3" open>
+                  <summary className="cursor-pointer text-emerald-300">Detail Sections</summary>
+                  <div className="mt-3">
+                    <DetailSectionsEditor sections={proj.detailSections} onChange={(v) => setProj({ ...proj, detailSections: v })} />
+                  </div>
+                </details>
+
+                <div className="flex gap-3 pt-2">
+                  <Button type="button" variant="outline" onClick={() => { setProj(emptyProject); setEditingId(null); }} className="border-emerald-700/50 text-emerald-300">New</Button>
+                  <Button type="button" onClick={() => saveAdvanced(false)} disabled={saving} className="bg-emerald-600 text-white"><Save className="h-4 w-4 mr-2" /> Save Draft</Button>
+                  <Button type="button" onClick={() => saveAdvanced(true)} disabled={saving} className="bg-teal-600 text-white"><Save className="h-4 w-4 mr-2" /> Publish</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-emerald-800/40 bg-neutral-900/60 backdrop-blur-sm shadow-xl">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-emerald-300">Live JSON Preview</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <JsonPreview value={proj} />
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         <div className="mt-8 p-4 rounded-lg border border-emerald-800/30 bg-neutral-900/40">
           <div className="text-xs text-center text-muted-foreground">
             🔒 Admin access is client-side only for demo purposes. Use a real backend for production security.
