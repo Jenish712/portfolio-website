@@ -39,64 +39,71 @@ function CodeSnippet({ snippet, id, onCopy, copied }) {
   return (
     <MotionCard
       key={id}
-      className="bg-card dark:bg-neutral-950/40 border dark:border-emerald-800/40 overflow-hidden"
+      className="bg-card dark:bg-neutral-950/40 border dark:border-emerald-800/40 overflow-visible"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <CardHeader className="gap-2">
         <CardTitle className="flex items-center gap-2 text-emerald-300 text-base">
           <Code2 className="h-5 w-5" />
           {snippet.title || "Code snippet"}
         </CardTitle>
-        <div className="flex items-center gap-3 text-xs text-muted-foreground uppercase tracking-wide">
-          <span>{snippet.language}</span>
+        <div className="flex items-center justify-between" role="group" aria-label="Code snippet actions">
+          <span className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="sr-only">Language:</span>
+            <span className="px-2 py-0.5 rounded-full border dark:border-emerald-700/40 bg-emerald-500/5 uppercase tracking-wide">
+              {(snippet.language || 'code').toString()}
+            </span>
+          </span>
           <Button
             variant="outline"
             size="sm"
-            className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300"
+            className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            aria-label={copied ? "Copied code" : "Copy code"}
             onClick={() => onCopy(id, snippet.code)}
           >
-            {copied ? (
-              <span className="flex items-center gap-1 text-sm">
-                <Check className="h-4 w-4" />
-                Copied
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-sm">
-                <Clipboard className="h-4 w-4" />
-                Copy
-              </span>
-            )}
+            {/* Mobile: icon only, Desktop: icon + label */}
+            <span className="sm:hidden">
+              {copied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
+            </span>
+            <span className="hidden sm:inline-flex items-center gap-1 text-sm">
+              {copied ? (<><Check className="h-4 w-4" />Copied</>) : (<><Clipboard className="h-4 w-4" />Copy</>)}
+            </span>
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="relative">
-        <div className="overflow-x-auto max-w-full">
-        <SyntaxHighlighter
-          language={snippet.language}
-          style={vscDarkPlus}
-          customStyle={{
-            margin: 0,
-            padding: '1rem',
-            borderRadius: '0.75rem',
-            background: 'rgba(17, 24, 39, 0.7)',
-            border: '1px solid rgba(16, 185, 129, 0.35)',
-            minWidth: '100%',
-            width: 'auto',
-            maxWidth: '100%'
-          }}
-          codeTagProps={{
-            style: {
-              fontSize: '0.875rem',
-              lineHeight: '1.5',
-            }
-          }}
-          wrapLongLines={true}
-        >
-          {snippet.code}
-        </SyntaxHighlighter>
-        </div>
+      <CardContent className="relative overflow-x-auto code-scroll pb-2" style={{ maxWidth: '100%', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+          <div style={{ minWidth: '100%', width: 'max-content' }}>
+            <SyntaxHighlighter
+              language={snippet.language}
+              style={vscDarkPlus}
+              customStyle={{
+                margin: 0,
+                padding: '1rem',
+                borderRadius: '0.75rem',
+                background: 'rgba(17, 24, 39, 0.7)',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
+                display: 'inline-block',
+                width: 'max-content',
+                minWidth: '100%',
+                maxWidth: 'none',
+                overflowX: 'visible'
+              }}
+              codeTagProps={{
+                style: {
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5',
+                  whiteSpace: 'pre',
+                  wordBreak: 'keep-all',
+                  overflowWrap: 'normal'
+                }
+              }}
+              wrapLongLines={false}
+            >
+              {snippet.code}
+            </SyntaxHighlighter>
+          </div>
       </CardContent>
     </MotionCard>
   );
@@ -187,9 +194,9 @@ export function ProjectDetail({ slug }) {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)] gap-6 md:gap-8 lg:gap-12">
+          <div className="grid md:grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)] gap-6 md:gap-8 lg:gap-12 overflow-x-hidden">
             {/* Main article */}
-            <div className="space-y-8 order-2 lg:order-1">
+            <div className="space-y-8 order-2 lg:order-1 min-w-0">
               {project.detailSections?.map((section, index) => (
                 <motion.article
                   key={`${section.heading}-${index}`}
@@ -300,7 +307,7 @@ export function ProjectDetail({ slug }) {
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-6 order-1 lg:order-2">
+            <div className="space-y-6 order-1 lg:order-2 min-w-0">
               <MotionCard
                 className="border dark:border-emerald-900/40 dark:bg-neutral-900/40"
                 initial={{ opacity: 0, y: 16 }}

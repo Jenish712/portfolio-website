@@ -95,3 +95,21 @@ export function ProjectListLoading({ count = 6 }) {
     </div>
   );
 }
+
+// AI Matrix Loader — lightweight JSX version of the provided HTML/CSS
+export function AiMatrixLoader({ className }) {
+  return (
+    <div className={cn("ai-matrix-loader", className)} aria-label="Loading" role="status">
+      <div className="digit">0</div>
+      <div className="digit">1</div>
+      <div className="digit">0</div>
+      <div className="digit">1</div>
+      <div className="digit">1</div>
+      <div className="digit">0</div>
+      <div className="digit">0</div>
+      <div className="digit">1</div>
+      <div className="glow" aria-hidden="true"></div>
+      <span className="sr-only">Loading</span>
+    </div>
+  );
+}

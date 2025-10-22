@@ -43,6 +43,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import './styles/App.css';
+import { AiMatrixLoader } from "./components/ui/loading";
 
 // Function to run smoke tests
 function runSmokeTests() {
@@ -108,6 +109,48 @@ function App() {
   const { dark, setDark } = useDarkMode();
   const [tests, setTests] = useState(null);
   const route = useHashRoute();
+  const [booting, setBooting] = useState(true);
+  const [navLoading, setNavLoading] = useState(false);
+  // New: split boot into minimum time and assets-loaded readiness
+  const [minBootElapsed, setMinBootElapsed] = useState(false);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+
+  // Show loader for at least 5.2s (prevents flash on fast loads)
+  useEffect(() => {
+    const MIN_BOOT_MS = 5200;
+    const t = setTimeout(() => setMinBootElapsed(true), MIN_BOOT_MS);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Also wait until the page assets finish loading (or 8s safety cap)
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setAssetsLoaded(true);
+      return;
+    }
+    const onLoad = () => setAssetsLoaded(true);
+    window.addEventListener("load", onLoad, { once: true });
+    const MAX_BOOT_MS = 8000;
+    const fallback = setTimeout(() => setAssetsLoaded(true), MAX_BOOT_MS);
+    return () => {
+      window.removeEventListener("load", onLoad);
+      clearTimeout(fallback);
+    };
+  }, []);
+
+  // Booting ends only when both conditions are true
+  useEffect(() => {
+    setBooting(!(minBootElapsed && assetsLoaded));
+  }, [minBootElapsed, assetsLoaded]);
+
+  // Light navigation loader on hash route change
+  useEffect(() => {
+    if (!booting) {
+      setNavLoading(true);
+      const t = setTimeout(() => setNavLoading(false), 350);
+      return () => clearTimeout(t);
+    }
+  }, [route.name, route.slug, booting]);
 
   const projectsCount = getAllProjects().length;
   const experienceCount = EXPERIENCE.length;
@@ -278,6 +321,11 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground transition-colors">
+      {(booting || navLoading) && (
+        <div className="fixed inset-0 z-[9999] grid place-items-center bg-background/80 backdrop-blur-sm">
+          <AiMatrixLoader />
+        </div>
+      )}
       <CircuitBackground />
 
       <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border dark:border-emerald-800/40 bg-background/80 shadow-sm">
