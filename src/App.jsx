@@ -556,7 +556,8 @@ function App() {
                         ease: [0.21, 0.47, 0.32, 0.98]
                       }}
                     >
-                      <Card className="bg-neutral-900/40 border-emerald-800/40 hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
+                      {/* Light: match project card background; Dark: keep existing emerald accents via dark: classes elsewhere */}
+                      <Card className="bg-card border hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
                         <CardHeader className="pb-4">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                             <div className="flex-1">
@@ -621,7 +622,8 @@ function App() {
                       ease: [0.21, 0.47, 0.32, 0.98]
                     }}
                   >
-                    <Card className="bg-neutral-900/40 border-emerald-800/40 hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
+                    {/* Light: match project card background; Dark: emerald accents remain */}
+                    <Card className="bg-card border hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
                       <div className="flex flex-col sm:flex-row">
                         {/* Publication type indicator */}
                         <div className="flex-shrink-0 w-full sm:w-16 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
@@ -700,7 +702,8 @@ function App() {
         {route.name === "home" && (
           <ScrollReveal delay={0.6} direction="fade" duration={0.9}>
             <Section id="docs" title="Documentation" icon={FileText}>
-              <Card className="bg-neutral-900/40 border-emerald-800/40">
+              {/* Light: align card background with project cards */}
+              <Card className="bg-card border">
                 <CardContent className="pt-6 text-sm text-neutral-300 space-y-2">
                   <p>
                     <strong>Stack:</strong> React + Tailwind + shadcn/ui + framer-motion. Icons:
@@ -733,7 +736,8 @@ function App() {
         {route.name === "home" && (
           <ScrollReveal delay={0.7} direction="left" duration={1.0}>
             <Section id="contact" title="Contact" icon={Mail}>
-              <Card className="bg-neutral-900/40 border-emerald-800/40">
+              {/* Light: align card background with project cards */}
+              <Card className="bg-card border">
                 <CardContent className="pt-6">
                   <div className="text-sm text-neutral-300 mb-4">
                     {CTA.availability} {CTA.note}

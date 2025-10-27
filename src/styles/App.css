@@ -4,25 +4,41 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 9% 83%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    /* Light theme: corporate-elegant palette with AA contrast */
+    --background: 0 0% 100%; /* App background */
+    --foreground: 222 47% 11%; /* Primary text on light bg (#0B1220) */
+
+    --card: 0 0% 100%; /* Card/surface background */
+    --card-foreground: 222 47% 11%; /* Text on card */
+
+    --popover: 0 0% 100%; /* Popover/sheet background */
+    --popover-foreground: 222 47% 11%; /* Text on popover */
+
+    --primary: 226 72% 39%; /* Corporate blue for actions (#1E40AF) */
+    --primary-foreground: 210 40% 98%; /* On-primary text (#F8FAFC) */
+
+    --secondary: 210 40% 96%; /* Subtle tinted surface (#F1F5F9) */
+    --secondary-foreground: 222 47% 11%; /* Text on secondary */
+
+    --muted: 215 16% 94%; /* Muted bg for panels/code (#E5E7EB) */
+    --muted-foreground: 215 16% 35%; /* Secondary text (#6B7280) */
+
+  --accent: 201 90% 32%; /* Cyan-blue accent for highlights (#0369A1) */
+    --accent-foreground: 210 40% 98%; /* On-accent text */
+
+    --destructive: 0 72% 42%; /* Destructive/red (#B91C1C) */
+    --destructive-foreground: 210 40% 98%; /* On-destructive text */
+
+    --border: 214 32% 91%; /* Dividers/inputs (#E2E8F0) */
+    --input: 214 32% 91%; /* Input outlines */
+    --ring: 226 72% 39%; /* Focus ring aligned to primary */
+
+    /* Optional interactive state tokens (for future use) */
+    --primary-hover: 226 72% 33%;
+    --secondary-hover: 210 40% 92%;
+  --accent-hover: 201 90% 28%;
+    --destructive-hover: 0 72% 37%;
+
     --radius: 0.5rem;
   }
 
@@ -93,13 +109,15 @@
   
   /* Better focus styles for accessibility */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2;
+    /* Use brand-aligned blue focus ring */
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2;
   }
   
   /* Custom scrollbar for code blocks */
   .code-scroll {
     scrollbar-width: thin;
-    scrollbar-color: rgba(16, 185, 129, 0.6) rgba(75, 85, 99, 0.3);
+    /* Brand blue scrollbar thumb for a professional feel */
+    scrollbar-color: rgba(37, 99, 235, 0.6) rgba(75, 85, 99, 0.3);
     max-width: 100%;
     overflow-x: auto !important;
   }
@@ -127,12 +145,12 @@
   }
   
   .code-scroll::-webkit-scrollbar-thumb {
-    background: rgba(16, 185, 129, 0.6);
+    background: rgba(37, 99, 235, 0.6);
     border-radius: 4px;
   }
   
   .code-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(16, 185, 129, 0.8);
+    background: rgba(37, 99, 235, 0.8);
   }
 }
 
@@ -204,14 +222,15 @@
 
   /* Subtle emerald glow for CTAs/cards */
   .glow-emerald {
-    box-shadow: 0 0 0 1px rgba(16,185,129,.35), 0 12px 30px rgba(16,185,129,.08);
+    /* Re-toned to brand blue while keeping class name for compatibility */
+    box-shadow: 0 0 0 1px rgba(37,99,235,.35), 0 12px 30px rgba(37,99,235,.08);
   }
 }
 
 @layer utilities {
   /* Animated circuit traces */
   .circuit-traces {
-    background-image: repeating-linear-gradient(120deg, transparent 0px, transparent 98px, rgba(16,185,129,.07) 98px, rgba(16,185,129,.07) 102px);
+    background-image: repeating-linear-gradient(120deg, transparent 0px, transparent 98px, rgba(37,99,235,.07) 98px, rgba(37,99,235,.07) 102px);
     background-size: 300px 300px;
     animation: circuit-traces 28s linear infinite;
   }
@@ -222,7 +241,7 @@
 
   /* Sweeping highlight */
   .circuit-sweep {
-    background: linear-gradient(90deg, transparent 0%, rgba(16,185,129,.06) 40%, rgba(16,185,129,.10) 50%, rgba(16,185,129,.06) 60%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(37,99,235,.06) 40%, rgba(37,99,235,.10) 50%, rgba(37,99,235,.06) 60%, transparent 100%);
     mix-blend-mode: screen;
     opacity: .25;
     animation: circuit-sweep 12s ease-in-out infinite;
@@ -238,8 +257,8 @@
     position: absolute;
     width: 6px; height: 6px;
     border-radius: 9999px;
-    background: rgba(16,185,129,.9);
-    box-shadow: 0 0 10px rgba(16,185,129,.6);
+    background: rgba(37,99,235,.9);
+    box-shadow: 0 0 10px rgba(37,99,235,.6);
     animation: node-blink 3.2s ease-in-out infinite;
   }
   @keyframes node-blink {
