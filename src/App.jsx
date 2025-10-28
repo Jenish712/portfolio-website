@@ -161,12 +161,6 @@ function App() {
         icon: Megaphone,
       },
       {
-        id: "docs",
-        label: "Documentation",
-        description: "Stack notes & implementation",
-        icon: ScrollText,
-      },
-      {
         id: "contact",
         label: "Contact",
         description: "Open for collaborations",
@@ -652,39 +646,6 @@ function App() {
         )}
 
         {route.name === "home" && <Separator className="bg-emerald-900/40" />}
-
-        {route.name === "home" && (
-          <ScrollReveal delay={0.6} direction="fade" duration={0.9}>
-            <Section id="docs" title="Documentation" icon={FileText}>
-              {/* Light: align; Dark: match emerald border like other sections */}
-              <Card className="bg-card border dark:border-emerald-800/40">
-                <CardContent className="pt-6 text-sm text-neutral-300 space-y-2">
-                  <p className="text-muted-foreground">
-                    <strong>Stack:</strong> React + Tailwind + shadcn/ui + framer-motion. Icons:
-                    lucide-react.
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Customize:</strong> Edit the data files in src/data/ to modify content.
-                    Colors use Tailwind classes; change <code>emerald</code> to your palette.
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Routing:</strong> Clicking a project routes to <code>#/project/&lt;slug&gt;</code>.
-                    Use the Back button or open in a new tab.
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Deploy:</strong> Works in static hosting because routing uses
-                    <code> hashchange</code>.
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Testing:</strong> Use the <em>Dev</em> button in the header to run smoke
-                    tests.
-                  </p>
-                </CardContent>
-              </Card>
-            </Section>
-          </ScrollReveal>
-        )}
-
         {route.name === "home" && <Separator className="bg-emerald-900/40" />}
 
         {route.name === "home" && (
