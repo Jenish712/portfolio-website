@@ -658,18 +658,45 @@ function App() {
                     {CTA.availability} {CTA.note}
                   </div>
                   <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      alert("This is a static demo. Wire this to an API.");
-                    }}
+                    name="contact"
+                    method="POST"
+                    data-netlify="true"
+                    netlify-honeypot="bot-field"
                     className="grid gap-4 sm:grid-cols-2"
                   >
-                    <Input placeholder="Your name" required className="dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" />
-                    <Input type="email" placeholder="Your email" required className="dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" />
-                    <Textarea placeholder="Project or role details" className="sm:col-span-2 dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" rows={5} required />
+                    {/* Hidden input for Netlify */}
+                    <input type="hidden" name="form-name" value="contact" />
+                    
+                    {/* Honeypot field for spam protection */}
+                    <p className="hidden">
+                      <label>
+                        Don't fill this out if you're human: <input name="bot-field" />
+                      </label>
+                    </p>
+
+                    <Input 
+                      name="name"
+                      placeholder="Your name" 
+                      required 
+                      className="dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" 
+                    />
+                    <Input 
+                      name="email"
+                      type="email" 
+                      placeholder="Your email" 
+                      required 
+                      className="dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" 
+                    />
+                    <Textarea 
+                      name="message"
+                      placeholder="Project or role details" 
+                      className="sm:col-span-2 dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" 
+                      rows={5} 
+                      required 
+                    />
                     <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3">
                       <Button type="submit" className="w-full sm:w-auto dark:bg-emerald-600 dark:hover:bg-emerald-500 dark:text-white">
-                        Send
+                        Send Message
                       </Button>
                       <Button variant="outline" asChild className="w-full sm:w-auto dark:border-emerald-700/50 dark:text-emerald-300 dark:hover:bg-emerald-500/10">
                         <a href={`mailto:${PROFILE.email}`}>Email me</a>
