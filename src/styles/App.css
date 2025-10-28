@@ -6,10 +6,10 @@
 @layer base {
   :root {
     /* Light theme: professional green palette with AA contrast */
-    --background: 0 0% 100%;
+    --background: 210 20% 97%; /* Very light skinny white with barely visible tint */
     --foreground: 222 47% 11%;
 
-    --card: 0 0% 100%;
+    --card: 0 0% 99%; /* Very light gray-white for cards */
     --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;

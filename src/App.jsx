@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Badge } from "./components/ui/badge";
 import { Input, Textarea } from "./components/ui/input";
 import { Separator } from "./components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./components/ui/sheet";
 import { CircuitBackground } from "./components/ui/background";
 import { LiveSignals } from "./components/ui/live-signals";
@@ -45,32 +44,6 @@ import {
 import './styles/App.css';
 import { AiMatrixLoader } from "./components/ui/loading";
 
-// Function to run smoke tests
-function runSmokeTests() {
-  const tests = [];
-  const add = (name, pass, details = "") => tests.push({ name, pass, details });
-
-  // lucide-react icons exist
-  add("lucide-react: Link exists", typeof Link === "function");
-  add("lucide-react: Cpu exists", typeof Cpu === "function");
-  add("lucide-react: CircuitBoard exists", typeof CircuitBoard === "function");
-
-  // data present
-  add("PROFILE has name", Boolean(PROFILE.name));
-  add("At least one project", Array.isArray(PROJECTS) && PROJECTS.length > 0);
-  add("At least one skills group", Array.isArray(SKILLS) && SKILLS.length > 0);
-
-  // filtering logic
-  const someTag = PROJECTS[0]?.tags?.[0];
-  const filtered = someTag ? PROJECTS.filter((p) => p.tags.includes(someTag)) : [];
-  add("Filtering returns ≥1 for known tag", someTag ? filtered.length >= 1 : true);
-
-  // highlights icons are valid components
-  add("HIGHLIGHTS icons are components", HIGHLIGHTS.every((h) => typeof h.icon === "function"));
-
-  return tests;
-}
-
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
     try {
@@ -107,7 +80,6 @@ function useDarkMode() {
 
 function App() {
   const { dark, setDark } = useDarkMode();
-  const [tests, setTests] = useState(null);
   const route = useHashRoute();
   const [booting, setBooting] = useState(true);
   const [navLoading, setNavLoading] = useState(false);
@@ -365,55 +337,6 @@ function App() {
               >
                 {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
-
-              {/* Developer tests */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="hidden sm:flex border-emerald-800/40 text-foreground hover:bg-emerald-500/10 h-9 px-4">
-                    Dev
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-background border text-foreground">
-                  <DialogHeader>
-                    <DialogTitle>Smoke tests</DialogTitle>
-                  </DialogHeader>
-                  <div className="mb-3 text-sm text-muted-foreground">
-                    Quick checks for icons, data, filtering, widgets, and routing.
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white border"
-                      onClick={() => setTests(runSmokeTests())}
-                    >
-                      Run
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-300"
-                      onClick={() => setTests(null)}
-                    >
-                      Clear
-                    </Button>
-                  </div>
-                  <div className="mt-3 grid gap-2">
-                    {tests?.map((t, i) => (
-                      <div
-                        key={i}
-                        className={`rounded-md border p-2 text-sm ${t.pass ? "border-green-400" : "border-red-400"}`}
-                      >
-                        <div className="font-medium">{t.name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {t.pass ? "PASS" : "FAIL"}
-                          {t.details ? ` — ${t.details}` : ""}
-                        </div>
-                      </div>
-                    ))}
-                    {!tests && <div className="text-xs text-muted-foreground">No results yet.</div>}
-                  </div>
-                </DialogContent>
-              </Dialog>
 
               {/* Mobile Menu Button */}
               <Sheet>

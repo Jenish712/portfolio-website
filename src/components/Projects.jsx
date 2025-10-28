@@ -194,7 +194,29 @@ export function Projects() {
 
         {/* Enhanced tabs with project counts */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full overflow-x-auto whitespace-nowrap flex gap-2 bg-card/60 dark:bg-neutral-900/40 border dark:border-emerald-800/40 p-1 rounded-md md:grid md:grid-cols-2 lg:grid-cols-4 md:whitespace-normal md:overflow-visible">
+          {/* Mobile: Dropdown select */}
+          <div className="md:hidden">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              className="w-full px-4 py-3 bg-card/60 dark:bg-neutral-900/40 border dark:border-emerald-800/40 rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 capitalize"
+            >
+              {categories.map((category) => {
+                const count = category === "all" 
+                  ? allProjects.length 
+                  : allProjects.filter(p => p.category === category).length;
+                
+                return (
+                  <option key={category} value={category} className="capitalize">
+                    {category} ({count})
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* Desktop: Tab buttons */}
+          <TabsList className="hidden md:flex w-full h-auto flex-wrap justify-start gap-2 bg-card/60 dark:bg-neutral-900/40 border dark:border-emerald-800/40 p-2 rounded-md">
             {categories.map((category) => {
               const count = category === "all" 
                 ? allProjects.length 
@@ -204,10 +226,12 @@ export function Projects() {
                 <TabsTrigger 
                   key={category} 
                   value={category}
-                  className="min-w-[42%] sm:min-w-0 px-3 py-2 hover:text-foreground"
+                  className="flex-shrink-0 px-3 py-2 hover:text-foreground data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-300"
                 >
-                  <span className="capitalize">{category}</span>
-                  <span className="ml-2 px-1.5 py-0.5 text-xs bg-foreground/10 text-foreground/70 rounded-full">
+                  <span className="capitalize truncate max-w-[200px]" title={category}>
+                    {category}
+                  </span>
+                  <span className="ml-2 px-1.5 py-0.5 text-xs bg-foreground/10 text-foreground/70 rounded-full flex-shrink-0">
                     {count}
                   </span>
                 </TabsTrigger>

@@ -345,10 +345,20 @@ export function ProjectDetail({ slug }) {
                   )}
                   {project.category && (
                     <div className="flex items-start gap-3">
-                      <CircuitBoard className="h-5 w-5 text-emerald-400" />
-                      <div>
-                        <p className="text-xs uppercase text-muted-foreground">Category</p>
-                        <p className="font-medium">{project.category}</p>
+                      <CircuitBoard className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs uppercase text-muted-foreground mb-2">Category</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.category.split(/[,&]+/).map((cat, idx) => (
+                            <Pill 
+                              key={idx} 
+                              variant="secondary" 
+                              className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 text-xs px-2.5 py-1"
+                            >
+                              {cat.trim()}
+                            </Pill>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}
