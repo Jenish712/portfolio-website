@@ -263,6 +263,10 @@ spi_write_blocking(SPI1, (uint8_t *)&frame, sizeof(frame));`,
     ],
   },
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
   {
     title: "Industrial Three-Phase Servo Voltage Stabilizer with Real-Time Protection System",
     slug: slugify("Industrial Three-Phase Servo Voltage Stabilizer with Real-Time Protection System"),
@@ -278,13 +282,13 @@ The system continuously monitors three-phase electrical parameters (voltage, cur
 > **Platform:** ATmega4809 (16 MHz internal oscillator) • **Framework:** Arduino with atmelmegaavr core • **IDE:** PlatformIO • **Programming:** Serial UPDI • **Language:** C/C++`,
 
     summary:
-      "Industrial 3-phase servo stabilizer with ATmega4809: real-time voltage/current/frequency monitoring, staged protection ladder (9 fault types), per-phase servo regulation, persistent EEPROM logging, and professional LCD UI with digit-editing menus.",
+      "Industrial 3-phase servo stabilizer with ATmega4809: real-time voltage, current, frequency monitoring, staged protection ladder (9 fault types), per-phase servo regulation, persistent EEPROM logging, and professional LCD UI with digit-editing menus.",
 
     content: [
-      "Real-time monitoring of 9 electrical parameters: 3-phase input/output voltages (R, Y, B), 3-phase load currents, earth leakage voltage, and grid frequency via hardware capture",
-      "Professional 20×4 character LCD interface with auto-detection for multiple I2C controller types (0x27/0x3E addresses, PCF8574/AIP31068 chips)",
+      "Real-time monitoring of 9 electrical parameters: 3-phase input & output voltages (R, Y, B), 3-phase load currents, earth leakage voltage, and grid frequency via hardware capture",
+      "Professional 20×4 character LCD interface with auto-detection for multiple I2C controller types (like 0x27 or 0x3E addresses, PCF8574 & AIP31068 chips)",
       "Advanced digit-by-digit parameter editing system with bounds checking, password protection, and default value restoration",
-      "Multi-tiered protection ladder with 9 fault detection types: over/under voltage (3 stages each), overload current (3 stages), frequency deviation, earth leakage, phase reversal, and ELCB trip",
+      "Multi-tiered protection ladder with 9 fault detection types: over & under voltage (3 stages each), overload current (3 stages), frequency deviation, earth leakage, phase reversal, and ELCB trip",
       "Intelligent staged fault response system with configurable timers, countdown displays, and automatic recovery when conditions normalize",
       "Non-volatile EEPROM storage for 30+ system parameters and circular buffer event logging with timestamps",
       "Independent per-phase servo motor control with hysteresis-based regulation, direction interlocks, and dead-time protection",
@@ -332,8 +336,8 @@ The system continuously monitors three-phase electrical parameters (voltage, cur
     ],
 
     links: [
-      { label: "GitHub Repository", url: "https://github.com/Jenish712/At4809_3P_Servo" },
-      { label: "Technical Documentation", url: "#" },
+      { label: "Code", url: "https://github.com/Jenish712/At4809_3P_Servo" },
+      { label: "Docs", url: "#" },
       { label: "Demo Video", url: "#" }
     ],
 

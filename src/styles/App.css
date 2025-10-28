@@ -75,6 +75,15 @@
 
 /* Utilities */
 @layer utilities {
+  /* Typography helpers for nicer justification in narrow columns */
+  .text-justify-pretty { text-align: justify; text-justify: inter-word; hyphens: auto; }
+  @supports (text-wrap: balance) {
+    .text-justify-pretty { text-wrap: balance; }
+  }
+  @supports (text-wrap: pretty) {
+    .text-justify-pretty { text-wrap: pretty; }
+  }
+
   /* Line clamp helpers */
   .line-clamp-2 { display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .line-clamp-3 { display: -webkit-box; line-clamp: 3; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

@@ -183,11 +183,11 @@ export function ProjectDetail({ slug }) {
                 <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
                   {project.title}
                 </h1>
-                <div className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-                  <MarkdownText>{project.description}</MarkdownText>
-                </div>
+                <MarkdownText className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                  {project.description}
+                </MarkdownText>
                 <div className="flex flex-wrap gap-2">
-                  {project.tech.map((tech) => (
+                  {(project.tech || []).map((tech) => (
                     <Pill key={tech} variant="secondary" className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30">
                       {tech}
                     </Pill>
@@ -216,16 +216,16 @@ export function ProjectDetail({ slug }) {
                   </div>
 
                   {section.body?.map((paragraph, i) => (
-                    <div key={i} className="text-muted-foreground leading-relaxed">
-                      <MarkdownText>{paragraph}</MarkdownText>
-                    </div>
+                    <MarkdownText key={i} className="text-muted-foreground leading-relaxed">
+                      {paragraph}
+                    </MarkdownText>
                   ))}
 
                   {section.bullets && section.bullets.length > 0 && (
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                    <ul className="list-disc list-inside space-y-2 text-muted-foreground marker:text-emerald-400">
                       {section.bullets.map((item, idx) => (
                         <li key={idx}>
-                          <MarkdownText>{item}</MarkdownText>
+                          <MarkdownText inline>{item}</MarkdownText>
                         </li>
                       ))}
                     </ul>
@@ -276,9 +276,9 @@ export function ProjectDetail({ slug }) {
                       {project.highlights.map((highlight, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
-                          <div className="text-muted-foreground flex-1">
-                            <MarkdownText>{highlight}</MarkdownText>
-                          </div>
+                          <MarkdownText className="text-muted-foreground flex-1">
+                            {highlight}
+                          </MarkdownText>
                         </div>
                       ))}
                     </CardContent>
@@ -373,7 +373,7 @@ export function ProjectDetail({ slug }) {
                 <CardContent className="space-y-3 text-sm text-muted-foreground">
                   <div className="space-y-2">
                     {project.content?.map((line, idx) => (
-                      <p key={idx} className="leading-relaxed">
+                      <p key={idx} className="leading-relaxed text-left lg:text-justify-pretty">
                         {line}
                       </p>
                     ))}
