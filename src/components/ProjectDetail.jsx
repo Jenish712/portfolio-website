@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Section, Pill } from "./ui/section";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
+import { MarkdownText } from "./ui/markdown";
 import {
   ArrowLeft,
   ExternalLink,
@@ -182,7 +183,9 @@ export function ProjectDetail({ slug }) {
                 <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
                   {project.title}
                 </h1>
-                <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">{project.description}</p>
+                <div className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                  <MarkdownText>{project.description}</MarkdownText>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
                     <Pill key={tech} variant="secondary" className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30">
@@ -213,15 +216,17 @@ export function ProjectDetail({ slug }) {
                   </div>
 
                   {section.body?.map((paragraph, i) => (
-                    <p key={i} className="text-muted-foreground leading-relaxed">
-                      {paragraph}
-                    </p>
+                    <div key={i} className="text-muted-foreground leading-relaxed">
+                      <MarkdownText>{paragraph}</MarkdownText>
+                    </div>
                   ))}
 
                   {section.bullets && section.bullets.length > 0 && (
                     <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                      {section.bullets.map((item) => (
-                        <li key={item}>{item}</li>
+                      {section.bullets.map((item, idx) => (
+                        <li key={idx}>
+                          <MarkdownText>{item}</MarkdownText>
+                        </li>
                       ))}
                     </ul>
                   )}
@@ -271,7 +276,9 @@ export function ProjectDetail({ slug }) {
                       {project.highlights.map((highlight, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
-                          <p className="text-muted-foreground">{highlight}</p>
+                          <div className="text-muted-foreground flex-1">
+                            <MarkdownText>{highlight}</MarkdownText>
+                          </div>
                         </div>
                       ))}
                     </CardContent>
