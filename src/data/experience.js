@@ -5,12 +5,22 @@ export const EXPERIENCE = [
     location: "Ontario, Canada",
     period: "Aug 2024 – Dec 2024",
     bullets: [
-      "Systems Programming (SOFE 3200) – Tutorials & Labs: Conducted tutorials and lab sessions to help students understand system-level programming concepts, including process management, memory management, and synchronization.",
-      "Designed and graded quizzes and assignments to assess students' grasp of low-level programming and operating system interactions.",
-      "Provided one-on-one support, debugging assistance, and insights into best practices for systems programming in C and Linux environments.",
-      "Distributed Systems (SOFE 4790) – Lab: Guided students through hands-on labs covering containerization, microservices, and cloud-based distributed systems.",
-      "Assisted in implementing scalable and fault-tolerant distributed applications using Docker, Kubernetes, and messaging protocols.",
-      "Offered technical support on concurrency, networking, and load balancing strategies in distributed environments.",
+      {
+        text: "Systems Programming (SOFE 3200) – Tutorials & Labs",
+        nested: [
+          "Conducted tutorials and lab sessions to help students understand system-level programming concepts, including process management, memory management, and synchronization.",
+          "Designed and graded quizzes and assignments to assess students' grasp of low-level programming and operating system interactions.",
+          "Provided one-on-one support, debugging assistance, and insights into best practices for systems programming in C and Linux environments.",
+        ]
+      },
+      {
+        text: "Distributed Systems (SOFE 4790) – Lab",
+        nested: [
+          "Guided students through hands-on labs covering containerization, microservices, and cloud-based distributed systems.",
+          "Assisted in implementing scalable and fault-tolerant distributed applications using Docker, Kubernetes, and messaging protocols.",
+          "Offered technical support on concurrency, networking, and load balancing strategies in distributed environments.",
+        ]
+      },
     ],
   },
   {
@@ -21,11 +31,15 @@ export const EXPERIENCE = [
     bullets: [
       "Developed real-time firmware for industrial automation and safety-critical electronics.",
       "Designed firmware for Microchip AVR MCUs (Mega-0, AVRDA/DB/DD) in real-time control applications.",
-      "Completed 7+ embedded firmware projects, including:",
-      "• Servo Stabilizers: Integrated TTT & DOSAP for advanced voltage regulation.",
-      "• Earth-Leakage Circuit Breaker (ELCB): Developed firmware for leakage detection & auto shutoff.",
-      "• Smart Motor Starters: Engineered control logic for single/three-phase motors with water level monitoring.",
-      "• IoT Remote Monitoring: Integrated MQTT & Google Cloud for real-time diagnostics.",
+      {
+        text: "Completed 7+ embedded firmware projects, including:",
+        nested: [
+          "Servo Stabilizers: Integrated TTT & DOSAP for advanced voltage regulation.",
+          "Earth-Leakage Circuit Breaker (ELCB): Developed firmware for leakage detection & auto shutoff.",
+          "Smart Motor Starters: Engineered control logic for single/three-phase motors with water level monitoring.",
+          "IoT Remote Monitoring: Integrated MQTT & Google Cloud for real-time diagnostics.",
+        ]
+      },
       "Debugged & optimized firmware using JTAG, Oscilloscope, and Logic Analyzer, improving fault detection efficiency.",
     ],
   },

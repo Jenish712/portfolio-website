@@ -514,14 +514,40 @@ function App() {
                         </CardHeader>
                         <CardContent className="pt-0">
                           <div className="space-y-3">
-                            {e.bullets.map((bullet, i) => (
-                              <div key={i} className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-primary dark:bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
-                                <span className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                                  {bullet}
-                                </span>
-                              </div>
-                            ))}
+                            {e.bullets.map((bullet, i) => {
+                              // Handle nested bullet structure
+                              if (typeof bullet === 'object' && bullet.nested) {
+                                return (
+                                  <div key={i} className="space-y-2">
+                                    <div className="flex items-start gap-3">
+                                      <div className="w-2 h-2 bg-primary dark:bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
+                                      <span className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                                        {bullet.text}
+                                      </span>
+                                    </div>
+                                    <div className="ml-8 space-y-2">
+                                      {bullet.nested.map((nestedBullet, j) => (
+                                        <div key={j} className="flex items-start gap-2">
+                                          <div className="w-1.5 h-1.5 border border-primary dark:border-emerald-400 rounded-full mt-2 flex-shrink-0" />
+                                          <span className="text-sm text-muted-foreground/90 leading-relaxed">
+                                            {nestedBullet}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              // Handle regular string bullet
+                              return (
+                                <div key={i} className="flex items-start gap-3">
+                                  <div className="w-2 h-2 bg-primary dark:bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
+                                  <span className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                                    {bullet}
+                                  </span>
+                                </div>
+                              );
+                            })}
                           </div>
                         </CardContent>
                       </Card>

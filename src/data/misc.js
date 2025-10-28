@@ -14,7 +14,7 @@ export const PUBLICATIONS = [
     title:
       "Dynamic Overload Surge Adjustment Protection (DOSAP) with Triple‑Tiered Tripping",
     venue: "ISCAS 2025",
-    link: "#",
+    link: "https://ieeexplore.ieee.org/document/11043453",
   },
 ];
 
