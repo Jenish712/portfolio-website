@@ -495,6 +495,11 @@ function App() {
                                   <p className="text-sm sm:text-base text-muted-foreground font-medium">
                                     {e.org}
                                   </p>
+                                  {e.location && (
+                                    <p className="text-xs sm:text-sm text-muted-foreground/80 mt-0.5">
+                                      {e.location}
+                                    </p>
+                                  )}
                                 </div>
                               </div>
                             </div>
