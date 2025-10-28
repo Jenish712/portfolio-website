@@ -1,0 +1,22 @@
+{
+  "short_name": "Jenish Gajera",
+  "name": "Jenish Gajera - Embedded Firmware Engineer Portfolio",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#10b981",
+  "background_color": "#0f172a",
+  "description": "Embedded developer focused on real-time firmware, MCU bring-up, and reliable field deployments."
+}
