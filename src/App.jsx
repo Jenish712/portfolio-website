@@ -557,19 +557,19 @@ function App() {
                       }}
                     >
                       {/* Light: match project card background; Dark: keep existing emerald accents via dark: classes elsewhere */}
-                      <Card className="bg-card border hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
+                      <Card className="bg-card border transition-all duration-300 hover:shadow-lg group overflow-hidden dark:bg-neutral-900/40 dark:border-emerald-800/40 dark:hover:border-emerald-600/60 dark:hover:shadow-emerald-500/10">
                         <CardHeader className="pb-4">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                                  <FileText className="h-5 w-5 text-emerald-400" />
+                                <div className="w-10 h-10 bg-primary/10 dark:bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                  <FileText className="h-5 w-5 text-primary dark:text-emerald-400" />
                                 </div>
                                 <div>
-                                  <CardTitle className="text-lg sm:text-xl text-emerald-300 group-hover:text-emerald-200 transition-colors">
+                                  <CardTitle className="text-lg sm:text-xl text-foreground group-hover:text-primary dark:text-emerald-300 dark:group-hover:text-emerald-200 transition-colors">
                                     {e.role}
                                   </CardTitle>
-                                  <p className="text-sm sm:text-base text-neutral-300 font-medium">
+                                  <p className="text-sm sm:text-base text-muted-foreground font-medium">
                                     {e.org}
                                   </p>
                                 </div>
@@ -577,7 +577,7 @@ function App() {
                             </div>
                             <div className="flex-shrink-0">
                               <div className="text-right">
-                                <div className="text-sm font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                                <div className="text-sm font-semibold text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/20">
                                   {e.period}
                                 </div>
                               </div>
@@ -588,8 +588,8 @@ function App() {
                           <div className="space-y-3">
                             {e.bullets.map((bullet, i) => (
                               <div key={i} className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
-                                <span className="text-sm sm:text-base text-neutral-300 leading-relaxed">
+                                <div className="w-2 h-2 bg-primary dark:bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
+                                <span className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                                   {bullet}
                                 </span>
                               </div>
@@ -623,12 +623,12 @@ function App() {
                     }}
                   >
                     {/* Light: match project card background; Dark: emerald accents remain */}
-                    <Card className="bg-card border hover:border-emerald-600/60 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group overflow-hidden">
+                    <Card className="bg-card border transition-all duration-300 hover:shadow-lg group overflow-hidden dark:bg-neutral-900/40 dark:border-emerald-800/40 dark:hover:border-emerald-600/60 dark:hover:shadow-emerald-500/10">
                       <div className="flex flex-col sm:flex-row">
                         {/* Publication type indicator */}
-                        <div className="flex-shrink-0 w-full sm:w-16 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
-                          <div className="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                            <FileText className="h-4 w-4 text-emerald-300" />
+                        <div className="flex-shrink-0 w-full sm:w-16 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-emerald-500/20 dark:to-teal-500/20 flex items-center justify-center">
+                          <div className="w-8 h-8 bg-primary/10 dark:bg-emerald-500/20 rounded-full flex items-center justify-center">
+                            <FileText className="h-4 w-4 text-primary dark:text-emerald-300" />
                           </div>
                         </div>
 
@@ -636,16 +636,16 @@ function App() {
                         <div className="flex-1 p-6">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             <div className="flex-1 min-w-0">
-                              <CardTitle className="text-lg sm:text-xl text-emerald-300 group-hover:text-emerald-200 transition-colors leading-tight mb-2">
+                              <CardTitle className="text-lg sm:text-xl text-foreground group-hover:text-primary dark:text-emerald-300 dark:group-hover:text-emerald-200 transition-colors leading-tight mb-2">
                                 {p.title}
                               </CardTitle>
-                              <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
+                              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                                 <span className="inline-flex items-center gap-1.5">
                                   <GitBranch className="h-3.5 w-3.5" />
                                   {p.venue}
                                 </span>
-                                <span className="text-emerald-400/60">•</span>
-                                <span className="text-xs uppercase tracking-wide font-medium text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                <span className="text-primary/70 dark:text-emerald-400/60">•</span>
+                                <span className="text-xs uppercase tracking-wide font-medium text-primary/80 bg-primary/10 dark:text-emerald-400/80 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
                                   Conference Paper
                                 </span>
                               </div>
@@ -656,7 +656,7 @@ function App() {
                                 variant="outline"
                                 size="sm"
                                 asChild
-                                className="border-emerald-700/50 text-emerald-300 hover:bg-emerald-500/10 hover:border-emerald-600/60 transition-all duration-200"
+                                className="dark:border-emerald-700/50 dark:text-emerald-300 dark:hover:bg-emerald-500/10 dark:hover:border-emerald-600/60"
                               >
                                 <a href={p.link} className="inline-flex items-center gap-2">
                                   <Link className="h-3.5 w-3.5" />
@@ -668,8 +668,8 @@ function App() {
                           </div>
 
                           {/* Abstract preview or additional info could go here */}
-                          <div className="mt-4 pt-4 border-t border-emerald-800/30">
-                            <p className="text-sm text-neutral-400 leading-relaxed">
+                          <div className="mt-4 pt-4 border-t border dark:border-emerald-800/30">
+                            <p className="text-sm text-muted-foreground leading-relaxed">
                               Research publication on advanced protection and control systems for power electronics.
                             </p>
                           </div>
@@ -702,26 +702,26 @@ function App() {
         {route.name === "home" && (
           <ScrollReveal delay={0.6} direction="fade" duration={0.9}>
             <Section id="docs" title="Documentation" icon={FileText}>
-              {/* Light: align card background with project cards */}
-              <Card className="bg-card border">
+              {/* Light: align; Dark: match emerald border like other sections */}
+              <Card className="bg-card border dark:border-emerald-800/40">
                 <CardContent className="pt-6 text-sm text-neutral-300 space-y-2">
-                  <p>
+                  <p className="text-muted-foreground">
                     <strong>Stack:</strong> React + Tailwind + shadcn/ui + framer-motion. Icons:
                     lucide-react.
                   </p>
-                  <p>
+                  <p className="text-muted-foreground">
                     <strong>Customize:</strong> Edit the data files in src/data/ to modify content.
                     Colors use Tailwind classes; change <code>emerald</code> to your palette.
                   </p>
-                  <p>
+                  <p className="text-muted-foreground">
                     <strong>Routing:</strong> Clicking a project routes to <code>#/project/&lt;slug&gt;</code>.
                     Use the Back button or open in a new tab.
                   </p>
-                  <p>
+                  <p className="text-muted-foreground">
                     <strong>Deploy:</strong> Works in static hosting because routing uses
                     <code> hashchange</code>.
                   </p>
-                  <p>
+                  <p className="text-muted-foreground">
                     <strong>Testing:</strong> Use the <em>Dev</em> button in the header to run smoke
                     tests.
                   </p>
@@ -736,10 +736,10 @@ function App() {
         {route.name === "home" && (
           <ScrollReveal delay={0.7} direction="left" duration={1.0}>
             <Section id="contact" title="Contact" icon={Mail}>
-              {/* Light: align card background with project cards */}
-              <Card className="bg-card border">
+              {/* Light: align; Dark: match emerald border like other sections */}
+              <Card className="bg-card border dark:border-emerald-800/40">
                 <CardContent className="pt-6">
-                  <div className="text-sm text-neutral-300 mb-4">
+                  <div className="text-sm text-muted-foreground mb-4">
                     {CTA.availability} {CTA.note}
                   </div>
                   <form
@@ -749,35 +749,14 @@ function App() {
                     }}
                     className="grid gap-4 sm:grid-cols-2"
                   >
-                    <Input
-                      placeholder="Your name"
-                      required
-                      className="bg-neutral-900/60 border-emerald-800/40 text-neutral-100 placeholder-neutral-500 focus-visible:ring-emerald-500/30"
-                    />
-                    <Input
-                      type="email"
-                      placeholder="Your email"
-                      required
-                      className="bg-neutral-900/60 border-emerald-800/40 text-neutral-100 placeholder-neutral-500 focus-visible:ring-emerald-500/30"
-                    />
-                    <Textarea
-                      placeholder="Project or role details"
-                      className="sm:col-span-2 bg-neutral-900/60 border-emerald-800/40 text-neutral-100 placeholder-neutral-500 focus-visible:ring-emerald-500/30"
-                      rows={5}
-                      required
-                    />
+                    <Input placeholder="Your name" required className="dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" />
+                    <Input type="email" placeholder="Your email" required className="dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" />
+                    <Textarea placeholder="Project or role details" className="sm:col-span-2 dark:bg-neutral-900/60 dark:border-emerald-800/40 dark:text-neutral-100 dark:placeholder-neutral-500" rows={5} required />
                     <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3">
-                      <Button
-                        type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/40 w-full sm:w-auto"
-                      >
+                      <Button type="submit" className="w-full sm:w-auto dark:bg-emerald-600 dark:hover:bg-emerald-500 dark:text-white">
                         Send
                       </Button>
-                      <Button
-                        variant="outline"
-                        asChild
-                        className="border-emerald-700/50 text-emerald-300 hover:bg-emerald-500/10 w-full sm:w-auto"
-                      >
+                      <Button variant="outline" asChild className="w-full sm:w-auto dark:border-emerald-700/50 dark:text-emerald-300 dark:hover:bg-emerald-500/10">
                         <a href={`mailto:${PROFILE.email}`}>Email me</a>
                       </Button>
                     </div>

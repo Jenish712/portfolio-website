@@ -4,9 +4,9 @@
   "description": "A personal portfolio website to showcase projects and skills.",
   "main": "src/index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "cross-env NODE_NO_WARNINGS=1 NODE_OPTIONS=--no-deprecation react-scripts start",
+    "build": "cross-env NODE_NO_WARNINGS=1 NODE_OPTIONS=--no-deprecation react-scripts build",
+    "test": "cross-env NODE_NO_WARNINGS=1 NODE_OPTIONS=--no-deprecation react-scripts test",
     "eject": "react-scripts eject"
   },
   "keywords": [
@@ -33,7 +33,8 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15"
+    "@types/react-dom": "^18.2.15",
+    "cross-env": "^7.0.3"
   },
   "browserslist": {
     "production": [
